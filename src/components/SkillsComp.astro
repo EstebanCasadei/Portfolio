@@ -1,0 +1,7 @@
+---
+const { icon, title} = Astro.props;
+---
+<div class="flex items-center gap-3 rounded-full bg-bg-tertiary/30 shadow-[inset_0_-4px_8px_-6px_rgba(0,0,0,1)] p-4 py-3 md:p-6 md:py-4">
+    <img src={icon} alt={title} class="w-4 md:w-8 h-4 md:h-8" />
+    <p class="clamp-p font-nohemi-regular text-primary">{title}</p>
+</div>

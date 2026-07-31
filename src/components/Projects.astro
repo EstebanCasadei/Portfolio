@@ -1,0 +1,540 @@
+---
+interface Technology {
+  name: string;
+  icon?: string;
+}
+
+interface Project {
+  id: number;
+  name: string;
+  number: string;
+  image: string;
+  technologies: Technology[];
+  description: string;
+  url: string;
+}
+const projects: Project[] = [
+  {
+    id: 1,
+    name: "Los 3 Tanos",
+    number: "01",
+    image: "/img/Project1.webp",
+    technologies: [
+      { name: "PHP", icon: "icons/PHP.svg" },
+      { name: "JavaScript", icon: "icons/JS.svg" },
+      { name: "MySQL", icon: "icons/MySQL.svg" },
+      { name: "SASS", icon: "icons/SASS.svg" },
+    ],
+    description:
+      "Implementación de <span class='text-secondary'>aplicación web</span> para gestión de restaurante. <br>Incluye herramientas como <span class='text-secondary'>gestión de productos</span>, <span class='text-secondary'>reservas</span>, <span class='text-secondary'>estadísticas</span>,<span class='text-secondary'> integración de IA</span>, entre otras.",
+    url: "https://los3tanospizzeria.ddns.net/",
+  },
+  {
+    id: 2,
+    name: "SugarBliss",
+    number: "02",
+    image: "/img/Project2.webp",
+    technologies: [
+      { name: "Astro", icon: "icons/Astro.svg" },
+      { name: "Tailwind", icon: "icons/Tailwind.svg" },
+      { name: "Supabase", icon: "icons/Supabase.svg" },
+      { name: "Figma", icon: "icons/Figma.svg" },
+    ],
+    description:
+      "Diseño de <span class='text-secondary'>landing page</span> para un emprendimiento de <span class='text-secondary'>pastelería</span>. <br />La finalidad fue crear una página para <span class='text-secondary'>centralizar</span> la información y <span class='text-secondary'>facilitar el contacto</span> con los clientes.",
+    url: "https://sugarbliss-byflor.com/",
+  },
+];
+
+const initialProject = projects[0];
+---
+
+<section
+  id="projects"
+  data-projects={JSON.stringify(projects)}
+  class="panel min-h-screen relative overflow-hidden z-20 bg-bg-tertiary border-t-2 border-primary/20 border-solid"
+>
+  <div class="clamp-padding relative">
+    <h3
+      class="text-left sm:max-w-full max-w-[700px] ml-auto text-balance clamp-h3 font-nohemi-bold text-primary mb-6"
+    >
+      <span class="text-primary-disabled font-nohemi-medium"
+        >Transformo tu&nbsp;</span
+      >idea
+      <span class="text-primary-disabled font-nohemi-regular">&nbsp;en</span
+      >&nbsp;<span class="text-secondary">producto</span>
+    </h3>
+    <div class="flex justify-end">
+      <h4>
+        <span class="text-xs font-nohemi-medium text-primary-disabled/50"
+          >_03&nbsp;&nbsp;</span
+        ><span
+          class="clamp-h4 font-nohemi-medium tracking-tight text-primary-disabled/80"
+          >Proyectos</span
+        >
+      </h4>
+    </div>
+  </div>
+
+  <div
+    class="flex justify-center items-center flex-col absolute w-full right-1/2 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-12"
+  >
+    <div class="sm:w-[clamp(280px,42vw,520px)] sm:max-w-full w-full">
+      <div class="sm:block sm:pt-0 pt-6 flex justify-between">
+        <p
+          data-project-name
+          class="clamp-h3 font-nohemi-regular text-primary pb-8 sm:absolute sm:top-1/2 sm:left-0 sm:pb-0 clamp-padding-x"
+        >
+          {initialProject.name}
+        </p>
+        <p
+          data-project-number
+          class="clamp-h3 font-nohemi-regular text-primary-disabled pb-8 sm:absolute sm:top-1/2 sm:right-0 sm:pb-0 clamp-padding-x"
+        >
+          {initialProject.number}
+        </p>
+      </div>
+      <div
+        data-tech-wrapper
+        class="relative overflow-hidden font-nohemi-regular text-primary w-full mb-4"
+        style="min-height: 2.5rem;"
+      >
+        <div
+          data-tech-container
+          class="flex flex-wrap flex-row justify-around w-full"
+        >
+          {
+            initialProject.technologies.map((tech) => (
+              <span
+                data-tech-badge
+                class="flex items-center gap-3 rounded-full shadow-[inset_0_-4px_8px_-6px_rgba(0,0,0)] p-4 py-2"
+              >
+                {tech.icon && (
+                  <img src={tech.icon} alt={tech.name} class="w-4 h-4" />
+                )}
+
+                <span class="relative z-10 text-[clamp(12px,2vw,16px)]">
+                  {tech.name}
+                </span>
+              </span>
+            ))
+          }
+        </div>
+      </div>
+      <div class="flex flex-col items-center sm:!px-0 clamp-padding-x">
+        <div class="relative sm:w-[clamp(280px,42vw,520px)] w-full h-80">
+          <div
+            data-project-image-container
+            class="absolute isolate inset-0 w-full h-full overflow-hidden border-1 border-secondary/20 border-solid rounded-xl"
+          >
+            <div class="absolute right-0 p-2 w-fit rounded-bl-lg bg-bg-tertiary text-primary font-nohemi-regular z-10">
+              <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-external-link"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 6h-6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6" /><path d="M11 13l9 -9" /><path d="M15 4h5v5" /></svg></span>
+            </div>
+            <a href={initialProject.url} target="_blank" data-project-link>
+              <img
+                data-project-image
+                src={initialProject.image}
+                alt={initialProject.name}
+                class="object-cover w-full h-full"
+              />
+            </a>
+          </div>
+        </div>
+        <div
+          data-description-container
+          class="relative overflow-hidden min-h-24 mt-4 w-full flex justify-center"
+        >
+          <p
+            data-project-description
+            class="clamp-p font-nohemi-regular text-primary max-w-xl text-center text-balance"
+            set:html={initialProject.description}
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
+
+  gsap.registerPlugin(ScrollTrigger, ScrambleTextPlugin);
+
+  const CONFIG = {
+    animation: {
+      imageRevealDuration: 1,
+      textScrambleDuration: 0.8,
+      textRevealDelay: 0.2,
+    },
+    scroll: {
+      scrub: true,
+    },
+  };
+
+  class ProjectScroller {
+    private section: HTMLElement;
+    private isAnimating = false;
+    private animationCooldown = 500;
+    private projects!: any[];
+    private lastProgress: number = 0;
+    private elements!: {
+      name: HTMLElement;
+      number: HTMLElement;
+      techContainer: HTMLElement;
+      techWrapper: HTMLElement;
+      imageContainer: HTMLElement;
+      image: HTMLImageElement;
+      link: HTMLAnchorElement;
+      description: HTMLElement;
+    };
+
+    constructor(sectionId: string) {
+      this.section = document.querySelector(sectionId)!;
+      if (!this.section) return;
+
+      this.projects = JSON.parse(this.section.dataset.projects || "[]");
+      this.elements = this.cacheElements();
+      this.elements.image.dataset.projectId = this.projects[0].id.toString();
+      this.elements.name.dataset.currentId = this.projects[0].id.toString();
+
+      this.elements.image.style.transition = "filter 0.1s ease";
+      this.elements.link.addEventListener("mouseenter", () =>
+        this.handleImageHover(this.elements.image),
+      );
+      this.elements.link.addEventListener("mouseleave", () =>
+        this.handleImageLeave(this.elements.image),
+      );
+
+      this.init();
+    }
+
+    private cacheElements() {
+      return {
+        name: this.section.querySelector("[data-project-name]") as HTMLElement,
+        number: this.section.querySelector(
+          "[data-project-number]",
+        ) as HTMLElement,
+        techContainer: this.section.querySelector(
+          "[data-tech-container]",
+        ) as HTMLElement,
+        techWrapper: this.section.querySelector(
+          "[data-tech-wrapper]",
+        ) as HTMLElement,
+        imageContainer: this.section.querySelector(
+          "[data-project-image-container]",
+        ) as HTMLElement,
+        image: this.section.querySelector(
+          "[data-project-image]",
+        ) as HTMLImageElement,
+        link: this.section.querySelector(
+          "[data-project-link]",
+        ) as HTMLAnchorElement,
+        description: this.section.querySelector(
+          "[data-project-description]",
+        ) as HTMLElement,
+      };
+    }
+
+    private init() {
+      if (this.projects.length <= 1) return;
+      ScrollTrigger.create({
+        trigger: this.section,
+        start: "top top",
+        end: () => `+=${window.innerHeight * (this.projects.length - 1)}`,
+        pin: true,
+        scrub: true,
+        onUpdate: (self) => this.handleScroll(self.progress),
+      });
+    }
+
+    private handleScroll(progress: number) {
+      const totalProjects = this.projects.length;
+
+      const continuousIndex = progress * (totalProjects - 1);
+
+      if (continuousIndex >= totalProjects - 1) {
+        const lastProject = this.projects[totalProjects - 1];
+
+        this.cleanupImages(lastProject.id);
+
+        if (
+          this.elements.name.dataset.currentId !== lastProject.id.toString()
+        ) {
+          this.scrambleToProject(lastProject);
+        }
+
+        return;
+      }
+
+      const fromIndex = Math.floor(continuousIndex);
+      const toIndex = fromIndex + 1;
+      const localProgress = continuousIndex - fromIndex;
+
+      this.animateTransition(fromIndex, toIndex, localProgress);
+    }
+
+    private animateTransition(
+      fromIndex: number,
+      toIndex: number,
+      progress: number,
+    ) {
+      const fromProject = this.projects[fromIndex];
+      const toProject = this.projects[toIndex];
+
+      const imageProgress = progress;
+      this.updateImageProgress(fromProject, toProject, imageProgress);
+
+      const shouldShowToProject = progress >= 0.8;
+      const targetProject = shouldShowToProject ? toProject : fromProject;
+
+      const currentTextId = this.elements.name.dataset.currentId;
+      if (currentTextId !== targetProject.id.toString()) {
+        this.scrambleToProject(targetProject);
+      }
+    }
+
+    private updateImageProgress(
+      fromProject: any,
+      toProject: any,
+      progress: number,
+    ) {
+      let fromLink = this.elements.imageContainer.querySelector(
+        `[data-project-link="${fromProject.id}"]`,
+      ) as HTMLAnchorElement;
+      let toLink = this.elements.imageContainer.querySelector(
+        `[data-project-link="${toProject.id}"]`,
+      ) as HTMLAnchorElement;
+
+      if (!fromLink) {
+        fromLink = this.createLink(fromProject);
+      }
+
+      if (!toLink) {
+        toLink = this.createLink(toProject);
+      }
+
+      const fromImage = fromLink.querySelector("img") as HTMLImageElement;
+      const toImage = toLink.querySelector("img") as HTMLImageElement;
+
+      gsap.set(fromLink, { yPercent: 0, zIndex: 1 });
+
+      gsap.set(toLink, {
+        clipPath: `inset(${(1 - progress) * 100}% 0 0 0)`,
+        zIndex: 2,
+      });
+
+      if (progress >= 0.99) {
+        this.cleanupImages(toProject.id);
+      } else if (progress <= 0.01) {
+        this.cleanupImages(fromProject.id);
+      }
+    }
+
+    private createLink(project: any): HTMLAnchorElement {
+      const link = document.createElement("a");
+      link.href = project.url;
+      link.target = "_blank";
+      link.dataset.projectLink = project.id.toString();
+      link.style.position = "absolute";
+      link.style.inset = "0";
+      link.style.width = "100%";
+      link.style.height = "100%";
+      link.style.display = "block";
+
+      const img = document.createElement("img");
+      img.src = project.image;
+      img.alt = project.name;
+      img.className = this.elements.image.className;
+      img.dataset.projectId = project.id.toString();
+      img.style.position = "absolute";
+      img.style.inset = "0";
+      img.style.width = "100%";
+      img.style.height = "100%";
+      img.style.transition = "filter 0.1s ease";
+
+      link.appendChild(img);
+      link.addEventListener("mouseenter", () => this.handleImageHover(img));
+      link.addEventListener("mouseleave", () => this.handleImageLeave(img));
+
+      this.elements.imageContainer.appendChild(link);
+      return link;
+    }
+
+    private handleImageHover(hoveredImage: HTMLImageElement) {
+      const allImages = this.elements.imageContainer.querySelectorAll("img");
+      allImages.forEach((img) => {
+        if (img !== hoveredImage) {
+          gsap.to(img, { filter: "brightness(0.3)", duration: 0.3 });
+        }
+      });
+    }
+
+    private handleImageLeave(hoveredImage: HTMLImageElement) {
+      const allImages = this.elements.imageContainer.querySelectorAll("img");
+      allImages.forEach((img) => {
+        gsap.to(img, { filter: "brightness(1)", duration: 0.3 });
+      });
+    }
+
+    private cleanupImages(keepProjectId: number) {
+      const allLinks = this.elements.imageContainer.querySelectorAll(
+        "a[data-project-link]",
+      );
+      allLinks.forEach((link) => {
+        const linkProjectId = (link as HTMLAnchorElement).dataset.projectLink;
+        if (linkProjectId && parseInt(linkProjectId) !== keepProjectId) {
+          link.remove();
+        }
+      });
+    }
+
+    private scrambleToProject(targetProject: any) {
+      if (this.isAnimating) return;
+      this.isAnimating = true;
+      this.elements.name.dataset.currentId = targetProject.id.toString();
+
+      gsap.to(this.elements.name, {
+        scrambleText: {
+          text: targetProject.name,
+          chars: "upperAndLowerCase",
+          revealDelay: CONFIG.animation.textRevealDelay,
+          tweenLength: false,
+        },
+        duration: CONFIG.animation.textScrambleDuration,
+      });
+
+      gsap.to(this.elements.number, {
+        scrambleText: {
+          text: targetProject.number,
+          chars: "0123456789",
+          revealDelay: CONFIG.animation.textRevealDelay,
+          tweenLength: false,
+        },
+        duration: CONFIG.animation.textScrambleDuration,
+      });
+
+      this.slideTechnologies(targetProject.technologies);
+
+      this.slideDescription(targetProject.description);
+
+      gsap.delayedCall(0.5, () => {
+        this.isAnimating = false;
+      });
+    }
+
+    private slideTechnologies(
+      newTechnologies: { name: string; icon?: string }[],
+    ) {
+      const currentTech = this.elements.techContainer;
+      const wrapper = this.elements.techWrapper;
+
+      currentTech.style.position = "absolute";
+      currentTech.style.width = "100%";
+      const newTech = document.createElement("div");
+      newTech.className = "flex flex-wrap flex-row justify-around w-full";
+      newTech.innerHTML = newTechnologies
+        .map(
+          (tech) => `
+          <span
+            data-tech-badge
+            class="flex items-center gap-3 rounded-full shadow-[inset_0_-4px_8px_-6px_rgba(0,0,0)] p-4 py-2"
+          >
+
+      ${
+        tech.icon
+          ? `
+          <img src=${tech.icon} alt=${tech.name} class="w-4 h-4" />
+      `
+          : ""
+      }
+      <span class="relative z-10 text-[clamp(12px,2vw,16px)]">${tech.name}</span>
+    </span>
+  `,
+        )
+        .join("");
+
+      newTech.style.position = "absolute";
+      newTech.style.width = "100%";
+
+      gsap.set(newTech, { y: 50, opacity: 0 });
+
+      wrapper.appendChild(newTech);
+      const currentHeight = currentTech.offsetHeight;
+      wrapper.style.height = `${currentHeight}px`;
+      const tl = gsap.timeline();
+
+      tl.to(
+        currentTech,
+        {
+          y: -50,
+          opacity: 0,
+          duration: 0.4,
+          ease: "power2.inOut",
+        },
+        0,
+      );
+
+      tl.to(
+        newTech,
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.4,
+          ease: "power2.inOut",
+          onComplete: () => {
+            currentTech.remove();
+            newTech.style.position = "relative";
+            newTech.style.width = "100%";
+            newTech.setAttribute("data-tech-container", "");
+            this.elements.techContainer = newTech;
+          },
+        },
+        0,
+      );
+    }
+
+    private slideDescription(newDescription: string) {
+      const currentDesc = this.elements.description;
+      const newDesc = document.createElement("p");
+      newDesc.className = currentDesc.className;
+      newDesc.innerHTML = newDescription;
+      newDesc.style.position = "absolute";
+      newDesc.style.width = "100%";
+      gsap.set(newDesc, { y: 100, opacity: 0 });
+
+      currentDesc.parentElement?.appendChild(newDesc);
+      const tl = gsap.timeline();
+
+      tl.to(
+        currentDesc,
+        {
+          y: -100,
+          opacity: 0,
+          duration: 0.5,
+          ease: "power2.inOut",
+        },
+        0,
+      );
+
+      tl.to(
+        newDesc,
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.5,
+          ease: "power2.inOut",
+          onComplete: () => {
+            currentDesc.remove();
+            this.elements.description = newDesc;
+          },
+        },
+        0,
+      );
+    }
+  }
+  document.addEventListener("DOMContentLoaded", () => {
+    new ProjectScroller("#projects");
+  });
+</script>

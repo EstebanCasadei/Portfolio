@@ -1,0 +1,154 @@
+---
+import SkillsComp from "./SkillsComp.astro";
+---
+
+<section
+  id="stack"
+  class="panel min-h-screen relative overflow-hidden z-20 bg-bg-quaternary border-t-2 border-primary/20 border-solid clamp-padding"
+>
+  <div class="max-w-2xl">
+    <div class="flex flex-wrap items-baseline mb-6">
+      <h3 class="clamp-h3 font-nohemi-bold text-primary">
+        Siempre <span class="font-nohemi-medium text-primary-disabled">busco&nbsp;</span>
+      </h3>
+
+      <div class="relative inline-block overflow-hidden leading-none">
+        <span
+          id="text-current"
+          class="block text-secondary clamp-h3 font-nohemi-medium whitespace-nowrap min-w-[8ch]"
+        >
+          Aprender
+        </span>
+
+        <span
+          id="text-next"
+          class="absolute left-0 top-0 block text-secondary clamp-h3 font-nohemi-medium whitespace-nowrap"
+        ></span>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-col w-full items-end text-right">
+    <h4>
+      <span class="text-xs font-nohemi-medium text-primary-disabled/50"
+        >_04&nbsp;&nbsp;
+      </span><span
+        class="clamp-h4 font-nohemi-medium tracking-tight text-primary-disabled/80"
+      >
+        Stack</span
+      >
+    </h4>
+  </div>
+  <div class="flex flex-col gap-16 md:gap-32 ml-0 md:ml-24 w-full mt-8 md:mt-24">
+    <div class="flex flex-col md:flex-row gap-0 md:gap-32 items-center md:items-start justify-center">
+      <div
+        class="w-40 md:w-56 shrink-0 clamp-h3 text-primary font-nohemi-bold mb-6 md:mb-0 text-center md:text-left"
+      >
+        Frontend
+      </div>
+      <div class="flex flex-wrap gap-x-3 gap-y-3 md:gap-x-4 md:gap-y-4 max-w-160 justify-center md:justify-start">
+        <SkillsComp icon="icons/HTML.svg" title="HTML" />
+        <SkillsComp icon="icons/CSS.svg" title="CSS" />
+        <SkillsComp icon="icons/JS.svg" title="JavaScript" />
+        <SkillsComp icon="icons/Ts.svg" title="TypeScript" />
+        <SkillsComp icon="icons/Tailwind.svg" title="Tailwind" />
+        <SkillsComp icon="icons/Bootstrap.svg" title="Bootstrap" />
+        <SkillsComp icon="icons/SASS.svg" title="SASS" />
+        <SkillsComp icon="icons/GSAP.svg" title="GSAP" />
+        <SkillsComp icon="icons/ThreeJS.svg" title="ThreeJS" />
+        <SkillsComp icon="icons/Astro.svg" title="Astro" />
+        <SkillsComp icon="icons/React.svg" title="React" />
+        <SkillsComp icon="icons/Figma.svg" title="Figma" />
+      </div>
+    </div>
+    <div class="flex flex-col md:flex-row gap-0 md:gap-32 items-center md:items-start justify-center">
+      <div
+        class="w-40 md:w-56 shrink-0 clamp-h3 text-primary font-nohemi-bold mb-6 md:mb-0 text-center md:text-left"
+      >
+        Backend
+      </div>
+      <div class="flex flex-wrap gap-x-3 gap-y-3 md:gap-x-4 md:gap-y-4 max-w-160 justify-center md:justify-start">
+        <SkillsComp icon="icons/PHP.svg" title="PHP" />
+        <SkillsComp icon="icons/MySQL.svg" title="MySQL" />
+        <SkillsComp icon="icons/PostgreSQL.svg" title="PostgreSQL" />
+        <SkillsComp icon="icons/Supabase.svg" title="Supabase" />
+        <SkillsComp icon="icons/Firebase.svg" title="Firebase" />
+      </div>
+    </div>
+    <div class="flex flex-col md:flex-row gap-0 md:gap-32 items-center md:items-start justify-center">
+      <div
+        class="w-40 md:w-56 shrink-0 clamp-h3 text-primary font-nohemi-bold mb-6 md:mb-0 text-center md:text-left"
+      >
+        Otros
+      </div>
+      <div class="flex flex-wrap gap-x-3 gap-y-3 md:gap-x-4 md:gap-y-4 max-w-160 justify-center md:justify-start">
+        <SkillsComp icon="icons/Git.svg" title="Git" />
+        <SkillsComp icon="icons/Github.svg" title="Github" />
+        <SkillsComp icon="icons/XAMPP.svg" title="XAMPP" />
+        <SkillsComp icon="icons/Docker.svg" title="Docker" />
+        <SkillsComp icon="icons/NPM.svg" title="NPM" />
+        <SkillsComp icon="icons/Vercel.svg" title="Vercel" />
+        <SkillsComp icon="icons/Ollama.svg" title="Ollama" />
+        <SkillsComp icon="icons/Blender.svg" title="Blender" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap } from "gsap";
+
+  const words = ["aprender", "mejorar", "descubrir", "innovar"];
+
+  const current = document.getElementById("text-current")!;
+  const next = document.getElementById("text-next")!;
+
+  let index = 0;
+
+  gsap.set(next, {
+    yPercent: 100,
+  });
+
+  function changeWord() {
+    const nextIndex = (index + 1) % words.length;
+
+    next.textContent = words[nextIndex];
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        current.textContent = words[nextIndex];
+
+        gsap.set(current, {
+          yPercent: 0,
+        });
+
+        gsap.set(next, {
+          yPercent: 100,
+        });
+
+        index = nextIndex;
+      },
+    });
+
+    tl.to(
+      current,
+      {
+        yPercent: -100,
+        duration: 0.45,
+        ease: "power2.inOut",
+      },
+      0,
+    );
+
+    tl.to(
+      next,
+      {
+        yPercent: 0,
+        duration: 0.45,
+        ease: "power2.inOut",
+      },
+      0,
+    );
+  }
+
+  setInterval(changeWord, 2200);
+</script>

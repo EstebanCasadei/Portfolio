@@ -1,0 +1,154 @@
+<section
+  id="about"
+  class="panel min-h-screen relative overflow-hidden z-10 bg-bg-secondary border-t-2 border-primary/20 border-solid text-nowrap"
+>
+  <div class="clamp-padding h-full min-h-screen grid grid-rows-[auto_auto_1fr]">
+    <div class="text-primary font-nohemi-bold max-w-200 relative w-content">
+      <span
+        class="font-nohemi-bold italic text-[clamp(4rem,6vw,6rem)]/24 leading-[clamp(4rem,6vw,6rem)] absolute transform sm:-translate-y-4 md:-translate-y-6 -translate-y-2 inset-0 -z-1"
+        >"</span
+      >
+      <span
+        class="clamp-p ml-[clamp(3rem,10vw,4rem)] font-nohemi-regular text-secondary/70"
+        >Milton Glaser</span
+      >
+      <h3 class="clamp-h3">
+        <span class="text-primary-disabled font-nohemi-medium"
+          >Hay tres respuestas ante<br />un diseño: sí, no y
+        </span> ¡WOW!<br /><span
+          class="text-primary-disabled font-nohemi-medium"
+          >El
+        </span> objetivo <span class="text-primary-disabled font-nohemi-medium"
+          >es lograr el ¡WOW!</span
+        >
+      </h3>
+    </div>
+    <div class="flex justify-end">
+      <h4>
+        <span class="text-xs font-nohemi-medium text-primary-disabled/50"
+          >_02&nbsp;&nbsp;
+        </span><span
+          class="clamp-h4 font-nohemi-medium tracking-tight text-primary-disabled/80"
+        >
+          Filosofía</span
+        >
+      </h4>
+    </div>
+    <div class="grid place-items-center">
+      <div
+        class="sm:flex-row flex flex-col justify-center items-center sm:text-left text-center gap-8"
+      >
+        <div class="overflow-hidden rounded-tl-[64px] rounded-br-[64px] border-secondary/20 border">
+          <img
+            id="about-image"
+            src="/img/Perfil.png"
+            class="w-[clamp(12rem,20vw,16rem)] h-auto object-cover "
+          />
+        </div>
+        <p
+          id="reveal-text"
+          class="text-primary clamp-p font-nohemi-regular text-pretty max-w-80"
+        >
+          Una <span class="text-secondary">página web</span> es la cara al público
+          de cualquier emprendimiento. Si la primera impresión que recibe un cliente
+          parece sacada de una <span class="text-secondary"
+            >plantilla o generada por IA</span
+          >, se pierde el interés.
+          <br />Cada negocio merece una personalidad propia, y su web debería
+          transmitirla.
+
+          <br /><br />
+          Trabajo junto a marcas y emprendimientos que buscan algo más que una página
+          informativa.
+          <br />Creo <span class="text-secondary">experiencias digitales</span> personalizadas
+          que reflejan quiénes son, qué ofrecen y por qué alguien debería elegirlos,
+          porque una web genérica
+          <span class="text-secondary"> nunca</span> debería representar a un negocio.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  function splitTextIntoWords(element: HTMLElement) {
+    const walk = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null);
+    const textNodes: Node[] = [];
+    let node;
+    while ((node = walk.nextNode())) {
+      textNodes.push(node);
+    }
+
+    textNodes.forEach((textNode) => {
+      const parent = textNode.parentNode;
+      if (!parent || !(parent instanceof HTMLElement)) return;
+
+      if (parent.classList && parent.classList.contains("word")) return;
+
+      const text = textNode.nodeValue || "";
+      const words = text.split(/(\s+)/);
+
+      const fragment = document.createDocumentFragment();
+      words.forEach((word) => {
+        if (word.trim() === "") {
+          fragment.appendChild(document.createTextNode(word));
+        } else {
+          const span = document.createElement("span");
+          span.className = "word opacity-20 inline-block";
+          span.textContent = word;
+          fragment.appendChild(span);
+        }
+      });
+
+      parent.replaceChild(fragment, textNode);
+    });
+  }
+
+  const textElement = document.getElementById("reveal-text");
+  if (textElement) {
+    splitTextIntoWords(textElement);
+
+    const words = textElement.querySelectorAll(".word");
+
+    const anim = gsap.to(words, {
+      opacity: 1,
+      stagger: 0.1,
+      paused: true,
+    });
+
+    ScrollTrigger.create({
+      trigger: "#about",
+      start: "top 40%",
+      end: "bottom 100%",
+      scrub: true,
+      pinSpacing: true,
+
+      onUpdate: (self) => {
+        if (self.progress > anim.progress()) {
+          anim.progress(self.progress);
+        }
+      },
+    });
+    gsap.fromTo(
+      "#about-image",
+      {
+        yPercent: -10,
+      },
+      {
+        yPercent: 10,
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#about",
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+        },
+      },
+    );
+  }
+</script>
