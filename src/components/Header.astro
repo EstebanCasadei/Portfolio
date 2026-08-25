@@ -25,7 +25,7 @@ const socialLinks = [
   id="menu-toggle"
   aria-expanded="false"
   aria-label="Abrir menú"
-  class="fixed top-6 right-6 z-100000 w-12 h-12 rounded-full bg-neutral-950 border border-white/10 flex items-center justify-center cursor-pointer shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 group"
+  class="fixed top-6 right-6 z-100000 w-12 h-12 rounded-full bg-neutral-950 border border-white/10 flex items-center justify-center cursor-pointer shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 group md:hidden"
 >
   <div class="relative w-6 h-4">
     <div
@@ -45,6 +45,22 @@ const socialLinks = [
     </div>
   </div>
 </button>
+
+<nav
+  class="hidden md:flex fixed top-6 right-6 z-100000 items-center gap-8"
+  aria-label="Navegación principal"
+>
+  {
+    navLinks.map((link) => (
+      <a
+        href={link.href}
+        class="font-nohemi-medium text-sm uppercase tracking-wider text-primary/80 hover:text-white transition-colors duration-200"
+      >
+        {link.label}
+      </a>
+    ))
+  }
+</nav>
 
 <div
   id="menu-overlay"
@@ -164,9 +180,10 @@ const socialLinks = [
       isOpen = open;
 
       toggleBtn.setAttribute("aria-expanded", String(isOpen));
-      panel.setAttribute("aria-hidden", String(!isOpen));
 
       if (isOpen) {
+        panel.inert = false;
+        panel.removeAttribute("aria-hidden");
         document.body.style.overflow = "hidden";
         const lenis = (window as any).lenis;
         if (lenis) {
@@ -176,6 +193,11 @@ const socialLinks = [
         gsap.set(panel, { visibility: "visible" });
         tl.play();
       } else {
+        if (panel.contains(document.activeElement)) {
+          (document.activeElement as HTMLElement).blur();
+        }
+        panel.setAttribute("aria-hidden", "true");
+        panel.inert = true;
         document.body.style.overflow = "";
         const lenis = (window as any).lenis;
         if (lenis) {

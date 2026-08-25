@@ -16,8 +16,23 @@ interface Project {
 const projects: Project[] = [
   {
     id: 1,
-    name: "Los 3 Tanos",
+    name: "LocalTTS",
     number: "01",
+    image: "/img/Project3.webp",
+    technologies: [
+      { name: "React", icon: "icons/React.svg" },
+      { name: "TypeScript", icon: "icons/Ts.svg" },
+      { name: "Tailwind", icon: "icons/Tailwind.svg" },
+      { name: "Firebase", icon: "icons/Firebase.svg" },
+    ],
+    description:
+      "Un generador <span class='text-secondary'>completamente local</span> de texto a audio enfocado principalmente en <span class='text-secondary'>audiolibros</span> y <span class='text-secondary'>documentos</span>.",
+    url: "https://local-tts-ad27a.web.app/",
+  },
+  {
+    id: 2,
+    name: "Los 3 Tanos",
+    number: "02",
     image: "/img/Project1.webp",
     technologies: [
       { name: "PHP", icon: "icons/PHP.svg" },
@@ -30,9 +45,9 @@ const projects: Project[] = [
     url: "https://los3tanospizzeria.ddns.net/",
   },
   {
-    id: 2,
+    id: 3,
     name: "SugarBliss",
-    number: "02",
+    number: "03",
     image: "/img/Project2.webp",
     technologies: [
       { name: "Astro", icon: "icons/Astro.svg" },
@@ -127,9 +142,15 @@ const initialProject = projects[0];
             data-project-image-container
             class="absolute isolate inset-0 w-full h-full overflow-hidden border-1 border-secondary/20 border-solid rounded-xl"
           >
-            <div class="absolute right-0 p-2 w-fit rounded-bl-lg bg-bg-tertiary text-primary font-nohemi-regular z-10">
+            <a
+              href={initialProject.url}
+              target="_blank"
+              data-project-icon
+              class="absolute right-0 p-2 w-fit rounded-bl-lg bg-bg-tertiary text-primary font-nohemi-regular z-10"
+              aria-label="Abrir proyecto"
+            >
               <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-external-link"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 6h-6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6" /><path d="M11 13l9 -9" /><path d="M15 4h5v5" /></svg></span>
-            </div>
+            </a>
             <a href={initialProject.url} target="_blank" data-project-link>
               <img
                 data-project-image
@@ -179,6 +200,7 @@ const initialProject = projects[0];
     private animationCooldown = 500;
     private projects!: any[];
     private lastProgress: number = 0;
+    private currentImage!: HTMLImageElement;
     private elements!: {
       name: HTMLElement;
       number: HTMLElement;
@@ -187,6 +209,7 @@ const initialProject = projects[0];
       imageContainer: HTMLElement;
       image: HTMLImageElement;
       link: HTMLAnchorElement;
+      icon: HTMLAnchorElement;
       description: HTMLElement;
     };
 
@@ -199,12 +222,19 @@ const initialProject = projects[0];
       this.elements.image.dataset.projectId = this.projects[0].id.toString();
       this.elements.name.dataset.currentId = this.projects[0].id.toString();
 
+      this.currentImage = this.elements.image;
       this.elements.image.style.transition = "filter 0.1s ease";
       this.elements.link.addEventListener("mouseenter", () =>
         this.handleImageHover(this.elements.image),
       );
       this.elements.link.addEventListener("mouseleave", () =>
         this.handleImageLeave(this.elements.image),
+      );
+      this.elements.icon.addEventListener("mouseenter", () =>
+        this.handleImageHover(this.currentImage),
+      );
+      this.elements.icon.addEventListener("mouseleave", () =>
+        this.handleImageLeave(this.currentImage),
       );
 
       this.init();
@@ -231,6 +261,7 @@ const initialProject = projects[0];
         link: this.section.querySelector(
           "[data-project-link]",
         ) as HTMLAnchorElement,
+        icon: this.section.querySelector("[data-project-icon]") as HTMLAnchorElement,
         description: this.section.querySelector(
           "[data-project-description]",
         ) as HTMLElement,
@@ -325,6 +356,11 @@ const initialProject = projects[0];
         zIndex: 2,
       });
 
+      this.elements.icon.href =
+        progress >= 0.5 ? toProject.url : fromProject.url;
+      this.currentImage =
+        (progress >= 0.5 ? toImage : fromImage) || this.currentImage;
+
       if (progress >= 0.99) {
         this.cleanupImages(toProject.id);
       } else if (progress <= 0.01) {
@@ -394,6 +430,7 @@ const initialProject = projects[0];
       if (this.isAnimating) return;
       this.isAnimating = true;
       this.elements.name.dataset.currentId = targetProject.id.toString();
+      this.elements.icon.href = targetProject.url;
 
       gsap.to(this.elements.name, {
         scrambleText: {

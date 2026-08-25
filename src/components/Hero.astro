@@ -1,5 +1,6 @@
 ---
 import GooeyText from "./GooeyText.astro";
+import Button from "./Button.astro";
 ---
 
 <main
@@ -51,6 +52,11 @@ import GooeyText from "./GooeyText.astro";
     </div>
   </div>
 
+  <div class="relative z-20 mt-8 flex flex-wrap items-center justify-center gap-4">
+    <Button href="#projects" variant="primary" label="Ver proyectos" />
+    <Button href="#contact" variant="secondary" label="Hablemos" />
+  </div>
+
   <h2
     class="absolute bottom-12 left-12 z-20 overflow-hidden
     text-primary font-nohemi-medium clamp-h2"
@@ -71,51 +77,7 @@ import GooeyText from "./GooeyText.astro";
 
 <script>
   import { gsap } from "gsap";
-  import { SplitText } from "gsap/SplitText";
 
-  gsap.registerPlugin(SplitText);
-
-  const h1 = document.querySelectorAll("#hero h1");
-  const h2 = document.querySelectorAll("#hero h2");
-  const gooey = document.querySelector("#gooey");
-
-  const tl = gsap.timeline();
-
-  if (h1) {
-    const splitH1 = SplitText.create(h1, {
-      type: "lines",
-      linesClass: "line",
-    });
-
-    tl.from(splitH1.lines, {
-      yPercent: 500,
-      opacity: 1,
-      duration: 1,
-      stagger: 0.5,
-      ease: "power4.out",
-    });
-  }
-  if (gooey) {
-    tl.from(gooey, {
-      opacity: 0,
-      duration: 0.2,
-      stagger: 0,
-      ease: "power4.out",
-    });
-  }
-  if (h2) {
-    const splitH2 = SplitText.create(h2, {
-      type: "lines",
-      linesClass: "line",
-    });
-    tl.from(splitH2.lines, {
-      xPercent: -100,
-      opacity: 1,
-      duration: 1,
-      stagger: 0.3,
-      ease: "power4.out",
-    });
-  }
   const highlight = document.getElementById("grid-highlight");
   const gridContainer = document.getElementById("grid-container");
 

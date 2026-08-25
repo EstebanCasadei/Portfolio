@@ -1,0 +1,133 @@
+---
+interface Props {
+  label: string;
+  variant: "primary" | "secondary";
+  href?: string;
+  type?: "button" | "submit" | "reset";
+  size?: "md" | "lg";
+  disabled?: boolean;
+  class?: string;
+}
+
+const {
+  label,
+  variant,
+  href,
+  type = "button",
+  size = "md",
+  disabled = false,
+  class: className = "",
+} = Astro.props;
+
+const basePrimary =
+  "btn-primary overflow-hidden box-border inline-flex items-center justify-center rounded-xl bg-secondary text-bg-primary font-nohemi-bold clamp-p tracking-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary transition-all duration-200 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100";
+
+const baseSecondary =
+  "btn-secondary overflow-hidden box-border relative inline-flex items-center justify-center rounded-xl border-2 border-secondary text-secondary font-nohemi-bold clamp-p tracking-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary transition-all duration-300 hover:text-bg-primary";
+
+const sizeClasses = {
+  md: "min-h-10 px-6",
+  lg: "min-h-12 px-8",
+};
+
+const classes = [
+  variant === "primary" ? basePrimary : baseSecondary,
+  sizeClasses[size],
+  className,
+].join(" ");
+
+const Tag = href ? "a" : "button";
+const attrs = href ? { href } : { type, disabled };
+---
+
+<Tag class={classes} {...attrs}>
+  {
+    variant === "primary" ? (
+      <>
+        <span class="span-mother">
+          {label.split("").map((char, i) => (
+            <span style={`transition: transform ${Math.min(0.2 + i * 0.05, 0.6)}s ease`}>
+              {char === " " ? "\u00A0" : char}
+            </span>
+          ))}
+        </span>
+        <span class="span-mother2" aria-hidden="true">
+          {label.split("").map((char, i) => (
+            <span style={`transition: transform ${Math.min(0.2 + i * 0.05, 0.6)}s ease`}>
+              {char === " " ? "\u00A0" : char}
+            </span>
+          ))}
+        </span>
+      </>
+    ) : (
+      <span class="relative z-10">{label}</span>
+    )
+  }
+</Tag>
+
+<style is:global>
+  @layer components {
+    .btn-primary {
+      position: relative;
+    }
+
+    .btn-primary .span-mother,
+    .btn-primary .span-mother2 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 1.2em;
+      overflow: hidden;
+    }
+
+    .btn-primary .span-mother2 {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      transform: translateY(-50%);
+    }
+
+    .btn-primary .span-mother > span,
+    .btn-primary .span-mother2 > span {
+      display: inline-block;
+      line-height: 1.2;
+    }
+
+    .btn-primary .span-mother > span {
+      transform: translateY(0);
+    }
+
+    .btn-primary:hover .span-mother > span {
+      transform: translateY(1.2em);
+    }
+
+    .btn-primary .span-mother2 > span {
+      transform: translateY(-1.2em);
+    }
+
+    .btn-primary:hover .span-mother2 > span {
+      transform: translateY(0);
+    }
+
+    .btn-secondary::before {
+      position: absolute;
+      content: "";
+      border-radius: 9999px;
+      background-color: var(--color-secondary);
+      width: 150px;
+      height: 150px;
+      top: 100%;
+      left: 50%;
+      right: 50%;
+      transform: translateX(-50%);
+      z-index: -1;
+      transition: top 0.3s, left 0.3s;
+    }
+
+    .btn-secondary:hover::before {
+      top: -30px;
+    }
+  }
+</style>
+

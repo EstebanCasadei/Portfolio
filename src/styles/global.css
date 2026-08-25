@@ -95,6 +95,7 @@
 html {
   scrollbar-width: thin;
   scrollbar-color: #525252 transparent;
+  background-color: black;
 }
 
 ::-webkit-scrollbar {
@@ -115,3 +116,4 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background-color: #737373;
 }
+
