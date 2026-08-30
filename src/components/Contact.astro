@@ -442,35 +442,46 @@ const EMAILJS_TEMPLATE_ID = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID ?? "";
     const EMAILJS_SERVICE_ID = form.dataset.serviceId ?? "";
     const EMAILJS_TEMPLATE_ID = form.dataset.templateId ?? "";
 
-    emailjs.init(EMAILJS_PUBLIC_KEY);
+    if (EMAILJS_PUBLIC_KEY) {
+      emailjs.init(EMAILJS_PUBLIC_KEY);
+    }
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-    const button = form.querySelector("button[type=submit]") as HTMLButtonElement;
 
-    button.disabled = true;
-    status!.className = "clamp-p font-nohemi-regular min-h-6 text-primary-disabled";
-    status!.textContent = "Enviando...";
+      const button = form.querySelector("button[type=submit]") as HTMLButtonElement;
 
-    const formData = {
-      name: (document.getElementById("name") as HTMLInputElement).value,
-      email: (document.getElementById("email") as HTMLInputElement).value,
-      subject: "Nuevo mensaje desde el portfolio",
-      message: (document.getElementById("message") as HTMLTextAreaElement).value,
-    };
+      button.disabled = true;
+      status!.className = "clamp-p font-nohemi-regular min-h-6 text-primary-disabled";
+      status!.textContent = "Enviando...";
 
-    try {
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, formData);
-      form.reset();
-      status!.className = "clamp-p font-nohemi-regular min-h-6 text-success";
-      status!.textContent = "Mensaje enviado. Te respondo a la brevedad.";
-    } catch {
-      status!.className = "clamp-p font-nohemi-regular min-h-6 text-error";
-      status!.textContent =
-        "No se pudo enviar. Escribime a joaquincasadei4@gmail.com";
-    } finally {
-      button.disabled = false;
-    }
+      if (!EMAILJS_PUBLIC_KEY || !EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID) {
+        status!.className = "clamp-p font-nohemi-regular min-h-6 text-error";
+        status!.textContent =
+          "Faltan las credenciales de EmailJS. Revisa tu archivo .env.";
+        button.disabled = false;
+        return;
+      }
+
+      const formData = {
+        name: (document.getElementById("name") as HTMLInputElement).value,
+        email: (document.getElementById("email") as HTMLInputElement).value,
+        subject: "Nuevo mensaje desde el portfolio",
+        message: (document.getElementById("message") as HTMLTextAreaElement).value,
+      };
+
+      try {
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, formData);
+        form.reset();
+        status!.className = "clamp-p font-nohemi-regular min-h-6 text-success";
+        status!.textContent = "Mensaje enviado. Te respondo a la brevedad.";
+      } catch {
+        status!.className = "clamp-p font-nohemi-regular min-h-6 text-error";
+        status!.textContent =
+          "No se pudo enviar. Escribime a joaquincasadei4@gmail.com";
+      } finally {
+        button.disabled = false;
+      }
     });
   }
 </script>
