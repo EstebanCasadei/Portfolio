@@ -1,6 +1,15 @@
 ---
 import "../styles/global.css";
 import Loader from "../components/Loader.astro";
+import { ClientRouter } from "astro:transitions";
+
+interface Props {
+  title?: string;
+  loader?: boolean;
+}
+
+const { title = "Esteban Casadei - Frontend Developer", loader = true } =
+  Astro.props;
 ---
 
 <!doctype html>
@@ -12,13 +21,94 @@ import Loader from "../components/Loader.astro";
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <title>Esteban Casadei - Frontend Developer</title>
+    <title>{title}</title>
+    <ClientRouter />
   </head>
   <body>
-    <Loader />
+    {loader && <Loader />}
     <slot />
   </body>
 </html>
+
+<script>
+  const w = window as any;
+
+  if (!w.__navigationBound) {
+    w.__navigationBound = true;
+    document.addEventListener("astro:before-swap", (event) => {
+      const navigation = event as import("astro:transitions/client").TransitionBeforeSwapEvent;
+      const fromHome = !!document.querySelector("#projects");
+      const toProject = !!navigation.newDocument.querySelector("[data-project-page]");
+      navigation.newDocument.documentElement.toggleAttribute("data-project-swipe", fromHome && toProject);
+      w.__scrollRestored = false;
+      w.__returnToProject = document.querySelector("[data-project-page]")
+        ? location.pathname.split("/").filter(Boolean).pop()
+        : null;
+      w.__modalCleanup?.();
+      w.__projectCleanup?.();
+      document.body.style.overflow = "";
+    });
+  }
+
+  function initLoader() {
+    const loader = document.getElementById("loader");
+    const percentLabel = document.getElementById("loader-percent");
+    if (!loader) return;
+
+    // El intro solo se muestra una vez por sesion; en swaps
+    // posteriores el index reinserta el markup y se elimina aca.
+    if (sessionStorage.getItem("loader-done")) {
+      loader.remove();
+      return;
+    }
+    if (!percentLabel) return;
+
+    document.documentElement.classList.add("is-loading");
+
+    const images = Array.from(document.images);
+    const totalTasks = images.length + 1; // +1 por las fuentes
+    let completedTasks = 0;
+    let finished = false;
+
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      loader.style.opacity = "0";
+      loader.style.pointerEvents = "none";
+      document.documentElement.classList.remove("is-loading");
+      sessionStorage.setItem("loader-done", "1");
+      setTimeout(() => loader.remove(), 600);
+    };
+
+    const updateProgress = () => {
+      completedTasks = Math.min(completedTasks + 1, totalTasks);
+      percentLabel.textContent = `${Math.round((completedTasks / totalTasks) * 100)}%`;
+      if (completedTasks >= totalTasks) finish();
+    };
+
+    images.forEach((img) => {
+      if (img.complete) {
+        updateProgress();
+      } else {
+        img.addEventListener("load", updateProgress, { once: true });
+        img.addEventListener("error", updateProgress, { once: true });
+      }
+    });
+
+    document.fonts.ready.then(updateProgress);
+
+    // Failsafe por si alguna imagen (p.ej. lazy) nunca dispara load.
+    setTimeout(finish, 6000);
+  }
+
+  if (!w.__loaderBound) {
+    w.__loaderBound = true;
+    // after-swap corre dentro de la view transition, antes del paint:
+    // evita el flash del "0%" al volver al index.
+    document.addEventListener("astro:after-swap", initLoader);
+  }
+  initLoader();
+</script>
 
 <style>
   html,
@@ -26,6 +116,6 @@ import Loader from "../components/Loader.astro";
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 100%;
+    min-height: 100%;
   }
 </style>

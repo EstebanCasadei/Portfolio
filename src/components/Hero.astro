@@ -68,7 +68,7 @@ import Button from "./Button.astro";
     <span class="text-success font-nohemi-regular">+</span> personalidad
   </h2>
 
-  <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+  <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 hidden sm:block">
     <div
       class="w-6 h-10 border-2 border-primary/30 rounded-full flex justify-center"
     >
@@ -77,7 +77,7 @@ import Button from "./Button.astro";
   </div>
 
   <div
-    class="absolute bottom-0 right-0 clamp-padding z-20 flex flex-wrap items-center justify-end gap-6"
+    class="absolute bottom-0 right-0 clamp-padding z-20 flex flex-col items-end justify-end gap-4 sm:flex-row sm:items-center sm:gap-6"
   >
     <a
       href="https://github.com/EstebanCasadei"
@@ -96,7 +96,7 @@ import Button from "./Button.astro";
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
-        class="w-8 h-8"
+        class="w-6 h-6 sm:w-8 sm:h-8"
       >
         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
         <path
@@ -122,7 +122,7 @@ import Button from "./Button.astro";
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
-        class="w-8 h-8"
+        class="w-6 h-6 sm:w-8 sm:h-8"
       >
         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
         <path d="M8 11v5"></path>
@@ -133,6 +133,16 @@ import Button from "./Button.astro";
           d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4l0 -10"
         ></path>
       </svg>
+    </a>
+
+    <a
+      href="https://www.instagram.com/esteban_casadei/"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Instagram"
+      class="text-primary hover:text-primary-disabled transition-colors duration-300"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-instagram"><path d="M0 0h24v24H0z" stroke="none"/><path d="M3 7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><path d="M8.5 12a3.5 3.5 0 1 0 7 0 3.5 3.5 0 0 0-7 0M17 7v.01"/></svg>
     </a>
 
     <a
@@ -150,7 +160,7 @@ import Button from "./Button.astro";
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
-        class="w-8 h-8"
+        class="w-6 h-6 sm:w-8 sm:h-8"
       >
         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
         <path
@@ -177,7 +187,7 @@ import Button from "./Button.astro";
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
-        class="w-8 h-8"
+        class="w-6 h-6 sm:w-8 sm:h-8"
       >
         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
         <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
@@ -192,25 +202,51 @@ import Button from "./Button.astro";
 <script>
   import { gsap } from "gsap";
 
-  const highlight = document.getElementById("grid-highlight");
-  const gridContainer = document.getElementById("grid-container");
+  const w = window as any;
 
-  let mouseX = window.innerWidth / 2;
-  let mouseY = window.innerHeight / 2;
+  w.__initHero = initHero;
+  if (!w.__heroBound) {
+    w.__heroBound = true;
+    document.addEventListener("astro:page-load", () => w.__initHero());
+  }
 
-  let x = mouseX;
-  let y = mouseY;
+  function initHero() {
+    w.__heroCleanup?.();
 
-  window.addEventListener("mousemove", (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-  });
+    const highlight = document.getElementById("grid-highlight");
+    const gridContainer = document.getElementById("grid-container");
+    if (!highlight || !gridContainer) return;
 
-  function animateGrid() {
-    x += (mouseX - x) * 0.08;
-    y += (mouseY - y) * 0.08;
+    let raf = 0;
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
 
-    const mask = `
+    let x = mouseX;
+    let y = mouseY;
+
+    const onMouse = (e: MouseEvent) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    };
+
+    const onParallax = (e: MouseEvent) => {
+      const px = (e.clientX / window.innerWidth - 0.5) * 20;
+      const py = (e.clientY / window.innerHeight - 0.5) * 20;
+
+      gsap.to(gridContainer, {
+        x: px,
+        y: py,
+        duration: 1.2,
+        ease: "power3.out",
+        overwrite: true,
+      });
+    };
+
+    function animateGrid() {
+      x += (mouseX - x) * 0.08;
+      y += (mouseY - y) * 0.08;
+
+      const mask = `
       radial-gradient(
         circle 260px at ${x}px ${y}px,
         black 0%,
@@ -219,23 +255,19 @@ import Button from "./Button.astro";
       )
     `;
 
-    highlight!.style.maskImage = mask;
-    highlight!.style.webkitMaskImage = mask;
-    requestAnimationFrame(animateGrid);
+      highlight!.style.maskImage = mask;
+      highlight!.style.webkitMaskImage = mask;
+      raf = requestAnimationFrame(animateGrid);
+    }
+
+    window.addEventListener("mousemove", onMouse);
+    window.addEventListener("mousemove", onParallax);
+    animateGrid();
+
+    w.__heroCleanup = () => {
+      window.removeEventListener("mousemove", onMouse);
+      window.removeEventListener("mousemove", onParallax);
+      cancelAnimationFrame(raf);
+    };
   }
-
-  animateGrid();
-
-  window.addEventListener("mousemove", (e) => {
-    const px = (e.clientX / window.innerWidth - 0.5) * 20;
-    const py = (e.clientY / window.innerHeight - 0.5) * 20;
-
-    gsap.to(gridContainer, {
-      x: px,
-      y: py,
-      duration: 1.2,
-      ease: "power3.out",
-      overwrite: true,
-    });
-  });
 </script>

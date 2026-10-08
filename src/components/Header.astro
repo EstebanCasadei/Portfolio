@@ -1,15 +1,16 @@
 ---
 const navLinks = [
-  { num: "_01", label: "Inicio", href: "#hero" },
-  { num: "_02", label: "Filosofia", href: "#about" },
-  { num: "_03", label: "Proyectos", href: "#projects" },
-  { num: "_04", label: "Stack", href: "#stack" },
-  { num: "_05", label: "Contacto", href: "#contact" },
+  { num: "_01", label: "Inicio", href: "/#hero" },
+  { num: "_02", label: "Filosofia", href: "/#about" },
+  { num: "_03", label: "Proyectos", href: "/#projects" },
+  { num: "_04", label: "Stack", href: "/#stack" },
+  { num: "_05", label: "Contacto", href: "/#contact" },
 ];
 
 const socialLinks = [
   { label: "Github", href: "https://github.com/EstebanCasadei", external: true },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/esteban-casadei-087553357/", external: true },
+  { label: "Instagram", href: "https://www.instagram.com/esteban_casadei/", external: true },
   { label: "Email", href: "mailto:joaquincasadei4@gmail.com", external: false },
   { label: "CV", href: "/cv/EstebanCasadeiCV.pdf", external: true },
 ];
@@ -103,6 +104,21 @@ const socialLinks = [
 
 <script>
   import { gsap } from "gsap";
+  import { navigate } from "astro:transitions/client";
+
+  const w = window as any;
+
+  // Los elementos del header se recrean en cada navegacion con
+  // ClientRouter: este init vuelve a bindear todo contra el DOM nuevo
+  // y limpia los listeners de window/document de la corrida anterior.
+  w.__initHeader = initHeader;
+  if (!w.__headerBound) {
+    w.__headerBound = true;
+    document.addEventListener("astro:page-load", () => w.__initHeader());
+  }
+
+  function initHeader() {
+  w.__headerCleanup?.();
 
   const toggleBtn = document.getElementById("menu-toggle");
   const overlay = document.getElementById("menu-overlay");
@@ -114,6 +130,17 @@ const socialLinks = [
 
   const menuLinks = document.querySelectorAll(".menu-link");
   const socialLinks = document.querySelectorAll(".social-link");
+
+  const removers: (() => void)[] = [];
+  const on = (
+    target: Document | Window | Element,
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: AddEventListenerOptions,
+  ) => {
+    target.addEventListener(type, listener, options);
+    removers.push(() => target.removeEventListener(type, listener, options));
+  };
 
   if (toggleBtn && overlay && panel && line1 && line2 && line3) {
     const tl = gsap.timeline({
@@ -207,21 +234,21 @@ const socialLinks = [
       }
     };
 
-    toggleBtn.addEventListener("click", () => {
+    on(toggleBtn, "click", () => {
       toggleMenu(!isOpen);
     });
 
-    overlay.addEventListener("click", () => {
+    on(overlay, "click", () => {
       if (isOpen) toggleMenu(false);
     });
 
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && isOpen) {
+    on(window, "keydown", (e) => {
+      if ((e as KeyboardEvent).key === "Escape" && isOpen) {
         toggleMenu(false);
       }
     });
 
-    document.addEventListener("click", (e) => {
+    on(document, "click", (e) => {
       const target = e.target as HTMLElement;
       if (
         isOpen &&
@@ -234,7 +261,7 @@ const socialLinks = [
     });
 
     menuLinks.forEach((link) => {
-      link.addEventListener("click", (e) => {
+      on(link, "click", (e) => {
         const href = link.getAttribute("href");
         if (href) {
           e.preventDefault();
@@ -242,7 +269,22 @@ const socialLinks = [
           toggleMenu(false);
 
           setTimeout(() => {
-            if (href.startsWith("#")) {
+            if (href.startsWith("/#")) {
+              const hash = href.slice(1);
+              if (location.pathname === "/") {
+                const targetEl = document.querySelector(hash);
+                if (targetEl) {
+                  const lenis = (window as any).lenis;
+                  if (lenis) {
+                    lenis.scrollTo(hash);
+                  } else {
+                    targetEl.scrollIntoView({ behavior: "smooth" });
+                  }
+                }
+              } else {
+                navigate(href);
+              }
+            } else if (href.startsWith("#")) {
               const targetEl = document.querySelector(href);
               if (targetEl) {
                 const lenis = (window as any).lenis;
@@ -263,7 +305,8 @@ const socialLinks = [
 
   const progressBar = document.getElementById("scroll-progress");
   if (progressBar) {
-    window.addEventListener(
+    on(
+      window,
       "scroll",
       () => {
         const scrollTop = window.scrollY || document.documentElement.scrollTop;
@@ -276,5 +319,8 @@ const socialLinks = [
       },
       { passive: true },
     );
+  }
+
+  w.__headerCleanup = () => removers.forEach((r) => r());
   }
 </script>

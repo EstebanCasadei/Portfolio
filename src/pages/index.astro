@@ -20,54 +20,112 @@ import Layout from "../layouts/Layout.astro";
 </Layout>
 
 <script>
-  import Lenis from "lenis";
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { SplitText } from "gsap/SplitText";
+  import { startSmoothScroll } from "../scripts/smoothScroll";
 
-  gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger, SplitText);
 
-  const lenis = new Lenis({
-    duration: 1.2,
-    smoothWheel: true,
-  });
+  const w = window as any;
 
-  (window as any).lenis = lenis;
+  w.__initHome = () => {
+    // Solo corre en el index (los listeners persisten entre navegaciones).
+    if (!document.querySelector(".panel")) return;
 
-  lenis.on("scroll", ScrollTrigger.update);
+    w.__homeTitleCleanup?.();
+    const lenis = startSmoothScroll();
 
-  gsap.ticker.add((time) => {
-    lenis.raf(time * 1000);
-  });
+    const titleSplits: SplitText[] = [];
+    let titleContext: gsap.Context | undefined;
+    let loaderObserver: MutationObserver | undefined;
+    const revealTitles = () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      titleContext = gsap.context(() => {
+        document.querySelectorAll<HTMLElement>(
+          ".panel h1:not(#hero h1), .panel h2, .panel h3, .panel h4",
+        ).forEach((title) => {
+          titleSplits.push(SplitText.create(title, {
+            type: "lines",
+            mask: "lines",
+            autoSplit: true,
+            aria: "none",
+            onSplit: (self) => gsap.fromTo(
+              self.lines,
+              { yPercent: 120 },
+              {
+                yPercent: 0,
+                duration: 1,
+                stagger: 0.1,
+                ease: "power4.out",
+                scrollTrigger: { trigger: title, start: "top 90%", once: true },
+              },
+            ),
+          }));
+        });
+      });
+      ScrollTrigger.refresh();
+      lenis.resize();
+    };
 
-  gsap.ticker.lagSmoothing(0);
+    // Esperar al loader para que la aparición del hero sea visible.
+    if (document.getElementById("loader")) {
+      loaderObserver = new MutationObserver(() => {
+        if (document.getElementById("loader")) return;
+        loaderObserver?.disconnect();
+        revealTitles();
+      });
+      loaderObserver.observe(document.body, { childList: true });
+    } else {
+      revealTitles();
+    }
+    w.__homeTitleCleanup = () => {
+      loaderObserver?.disconnect();
+      titleContext?.revert();
+      titleSplits.forEach((split) => split.revert());
+    };
 
-  const panels = gsap.utils.toArray<HTMLElement>(".panel");
-  const hero = panels[0];
-  const about = panels[1];
+    const panels = gsap.utils.toArray<HTMLElement>(".panel");
+    const hero = panels[0];
+    const about = panels[1];
 
-  if (hero && about) {
-    gsap
-      .timeline({
-        scrollTrigger: {
-          trigger: hero,
-          start: "top top",
-          end: "+=100%",
-          scrub: true,
-          pin: true,
-          pinSpacing: false,
-        },
-      })
-      .fromTo(
-        about,
-        {
-          yPercent: 1,
-        },
-        {
-          yPercent: 0,
-          ease: "none",
-        },
-      );
+    if (hero && about) {
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: hero,
+            start: "top top",
+            end: "+=100%",
+            scrub: true,
+            pin: true,
+            pinSpacing: false,
+          },
+        })
+        .fromTo(
+          about,
+          {
+            yPercent: 1,
+          },
+          {
+            yPercent: 0,
+            ease: "none",
+          },
+        );
+    }
+
+    ScrollTrigger.refresh();
+
+    // Al llegar con hash (/#projects desde un detalle), ir a la seccion.
+    // Si se restauro la posicion del scroller de proyectos, ese scroll
+    // tiene prioridad sobre el hash.
+    if (location.hash && !w.__scrollRestored) {
+      lenis?.scrollTo(location.hash, { immediate: true });
+    }
+  };
+
+  if (!w.__homeBound) {
+    w.__homeBound = true;
+    document.addEventListener("astro:before-swap", () => w.__homeTitleCleanup?.());
+    document.addEventListener("astro:page-load", () => w.__initHome());
   }
-
-  ScrollTrigger.refresh();
 </script>

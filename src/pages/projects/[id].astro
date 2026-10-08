@@ -1,0 +1,511 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Button from "../../components/Button.astro";
+import { projects, getNextProject, type Project } from "../../data/projects";
+
+export function getStaticPaths() {
+  return projects.map((project) => ({
+    params: { id: String(project.id) },
+    props: { project },
+  }));
+}
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const next = getNextProject(project.id);
+---
+
+<Layout title={`${project.name} - Esteban Casadei`} loader={false}>
+  <div
+    data-project-page
+    class="relative min-h-screen bg-bg-tertiary overflow-x-clip"
+  >
+    <Header />
+
+    <main>
+      <!-- Breadcrumb -->
+      <div
+        class="clamp-padding-x pt-24 sm:pt-28 flex items-center justify-between"
+      >
+        <a
+          href="/#projects"
+          class="clamp-p font-nohemi-medium text-primary-disabled hover:text-primary transition-colors duration-300 inline-flex items-center gap-2"
+        >
+          <span aria-hidden="true">←</span> Proyectos
+        </a>
+        <span class="text-xs font-nohemi-medium text-primary-disabled/50"
+          >_{project.number}</span
+        >
+      </div>
+
+      <!-- Hero -->
+      <section class="clamp-padding-x pt-8 pb-10 sm:pb-14">
+        <p
+          class="text-xs font-nohemi-medium text-primary-disabled/60 uppercase tracking-[0.25em] mb-4"
+        >
+          {project.client}
+        </p>
+        <h1
+          data-project-title
+          class="clamp-h1 font-nohemi-bold text-primary uppercase tracking-tight whitespace-nowrap"
+        >
+          <a
+            href={project.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Visitar el sitio de ${project.name}`}
+            class="hover:text-secondary transition-colors duration-300"
+          >
+            {project.name}
+            <span
+              aria-hidden="true"
+              class="align-baseline text-[0.4em] font-nohemi-medium text-secondary"
+              >↗</span
+            >
+          </a>
+        </h1>
+        <div
+          class="mt-6 flex flex-wrap gap-x-10 gap-y-2 clamp-p font-nohemi-regular text-primary-disabled"
+        >
+          <span>{project.role}</span>
+          <span>{project.year}</span>
+        </div>
+      </section>
+
+      <!-- Portada del proyecto -->
+      <section class="clamp-padding-x pb-6">
+        <div
+          data-project-hero
+          class="relative w-full aspect-[16/10] overflow-hidden rounded-xl border border-secondary/20 bg-bg-primary"
+        >
+          <img
+            data-hero-img
+            src={project.image}
+            alt={project.name}
+            class="w-full h-full object-cover"
+          />
+        </div>
+      </section>
+
+      <!-- Overview + meta -->
+      <section class="clamp-padding grid gap-12 lg:grid-cols-2">
+        <div>
+          <h2
+            class="text-xs font-nohemi-medium text-primary-disabled/50 uppercase tracking-[0.25em] mb-5"
+          >
+            Resumen
+          </h2>
+          <p
+            class="clamp-h4 font-nohemi-regular text-primary text-balance max-w-2xl"
+           set:html={project.overview} />
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-10 content-start">
+          <div class="col-span-2">
+            <h3
+              class="text-xs font-nohemi-medium text-primary-disabled/50 uppercase tracking-[0.25em]"
+            >
+              Tecnologías
+            </h3>
+            <div class="flex flex-wrap gap-2 mt-3">
+              {
+                project.technologies.map((tech) => (
+                  <span class="flex items-center gap-2 rounded-full border border-white/10 px-3 py-1.5">
+                    {tech.icon && (
+                      <img
+                        src={
+                          tech.icon.startsWith("/") ? tech.icon : `/${tech.icon}`
+                        }
+                        alt={tech.name}
+                        class="w-3.5 h-3.5"
+                      />
+                    )}
+                    <span class="text-xs font-nohemi-regular text-primary">
+                      {tech.name}
+                    </span>
+                  </span>
+                ))
+              }
+            </div>
+          </div>
+          <div>
+            <h3
+              class="text-xs font-nohemi-medium text-primary-disabled/50 uppercase tracking-[0.25em]"
+            >
+              Año
+            </h3>
+            <p class="mt-3 clamp-p font-nohemi-regular text-primary">
+              {project.year}
+            </p>
+          </div>
+          <div>
+            <h3
+              class="text-xs font-nohemi-medium text-primary-disabled/50 uppercase tracking-[0.25em]"
+            >
+              Rol
+            </h3>
+            <p class="mt-3 clamp-p font-nohemi-regular text-primary">
+              {project.role}
+            </p>
+          </div>
+          <div class="col-span-2">
+            <h3
+              class="text-xs font-nohemi-medium text-primary-disabled/50 uppercase tracking-[0.25em]"
+            >
+              Enlaces
+            </h3>
+            <div class="mt-3 flex flex-wrap gap-x-8 gap-y-2">
+              <a
+                href={project.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="clamp-p font-nohemi-medium text-primary hover:text-secondary transition-colors duration-300 inline-flex items-center gap-1.5"
+              >
+                Ver sitio <span aria-hidden="true">↗</span>
+              </a>
+              {
+                project.repo && (
+                  <a
+                    href={project.repo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="clamp-p font-nohemi-medium text-primary-disabled hover:text-primary transition-colors duration-300 inline-flex items-center gap-1.5"
+                  >
+                    Repositorio <span aria-hidden="true">↗</span>
+                  </a>
+                )
+              }
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Secciones numeradas -->
+      {
+        project.sections.map((section) => (
+          <section class="clamp-padding-x py-10 sm:py-16 border-t border-white/5 grid gap-6 md:grid-cols-12">
+            <div class="md:col-span-4">
+              <span class="text-xs font-nohemi-medium text-primary-disabled/50 tracking-wider">
+                {section.num} - {section.label}
+              </span>
+              <h3 class="clamp-h4 font-nohemi-medium text-primary mt-3">
+                {section.title}
+              </h3>
+            </div>
+            <div class="md:col-span-7 md:col-start-6">
+              <p class="clamp-p font-nohemi-regular text-primary-disabled leading-relaxed max-w-xl" set:html={section.body} />
+              {section.image && (
+                <div 
+                  class="mt-8 overflow-hidden rounded-xl border border-secondary/20 cursor-pointer group"
+                  data-section-img-click={section.image}
+                >
+                  <img
+                    src={section.image}
+                    alt={section.title}
+                    class="block w-full h-auto group-hover:scale-[1.02] transition-transform duration-300"
+                    loading="lazy"
+                  />
+                </div>
+              )}
+            </div>
+          </section>
+        ))
+      }
+
+      <!-- Galeria -->
+      <section 
+        class="clamp-padding-x py-10 grid gap-6 sm:grid-cols-2"
+        data-hero-image={project.image}
+        data-gallery={JSON.stringify(project.gallery)}
+        data-section-images={JSON.stringify(project.sections.filter(s => s.image).map(s => s.image))}
+      >
+        {
+          project.gallery.map((img, i) => (
+            <div
+              class="self-start overflow-hidden rounded-xl border border-secondary/20 cursor-pointer group"
+              data-gallery-img={img}
+            >
+              <img
+                src={img}
+                alt={`${project.name} - captura ${i + 1}`}
+                class="block w-full h-auto group-hover:scale-[1.02] transition-transform duration-300"
+                loading="lazy"
+              />
+            </div>
+          ))
+        }
+      </section>
+
+      <!-- Siguiente proyecto -->
+      <a
+        href={`/projects/${next.id}`}
+        data-next-project
+        class="block clamp-padding border-t border-white/10 group bg-bg-primary"
+      >
+        <span
+          class="text-xs font-nohemi-medium text-primary-disabled/50 uppercase tracking-[0.25em]"
+          >Siguiente proyecto</span
+        >
+        <div class="mt-4 flex items-baseline justify-between gap-4">
+          <h2
+            class="clamp-h3 font-nohemi-bold text-primary group-hover:text-secondary transition-colors duration-300"
+          >
+            {next.name}
+          </h2>
+          <span
+            class="clamp-h4 text-primary-disabled group-hover:translate-x-2 transition-transform duration-300"
+            aria-hidden="true">→</span
+          >
+        </div>
+        <div
+          data-next-preview
+          class="mt-8 overflow-hidden rounded-xl border border-secondary/20 aspect-[21/9]"
+        >
+          <img
+            src={next.image}
+            alt={next.name}
+            class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700 ease-out"
+            loading="lazy"
+          />
+        </div>
+      </a>
+
+      <!-- CTA -->
+      <section
+        class="clamp-padding border-t border-white/10 flex flex-col items-center text-center gap-6"
+      >
+        <p
+          class="clamp-h4 font-nohemi-regular text-primary max-w-xl text-balance"
+        >
+          ¿Tenés una idea para tu próximo proyecto?
+        </p>
+        <Button
+          href="/#contact"
+          variant="primary"
+          size="lg"
+          label="Hablemos"
+        />
+      </section>
+    </main>
+  </div>
+
+  <script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+    import { SplitText } from "gsap/SplitText";
+    import { stopSmoothScroll } from "../../scripts/smoothScroll";
+
+    gsap.registerPlugin(ScrollTrigger, SplitText);
+
+    const w = window as any;
+
+    w.__initProjectPage = () => {
+      // Solo corre en paginas de proyecto.
+      if (!document.querySelector("[data-project-page]")) return;
+      w.__projectCleanup?.();
+
+      stopSmoothScroll();
+
+      // Titulo shrink-to-fit: si el nombre desborda el ancho, se
+      // achica el font-size hasta entrar en una sola linea.
+      const title = document.querySelector<HTMLElement>(
+        "[data-project-title]",
+      );
+      if (title) {
+        const fit = () => {
+          title.style.fontSize = "";
+          const size = parseFloat(getComputedStyle(title).fontSize);
+          const overflow = title.scrollWidth - title.clientWidth;
+          if (overflow > 0) {
+            title.style.fontSize = `${Math.max(size * (title.clientWidth / title.scrollWidth), 22)}px`;
+          }
+        };
+        fit();
+        // Las fuentes custom pueden llegar despues del primer calculo.
+        document.fonts.ready.then(fit);
+        window.addEventListener("resize", fit);
+        w.__projectCleanup = () =>
+          window.removeEventListener("resize", fit);
+      }
+
+      const textSplits: SplitText[] = [];
+      const textContext = gsap.context(() => {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+        document.querySelectorAll<HTMLElement>(
+          "[data-project-page] main h2, [data-project-page] main h3, [data-project-page] main p",
+        ).forEach((el) => {
+          const split = SplitText.create(el, {
+            type: "lines",
+            mask: "lines",
+            autoSplit: true,
+            aria: "none",
+            onSplit: (self) => gsap.fromTo(
+              self.lines,
+              { yPercent: 120 },
+              {
+                yPercent: 0,
+                duration: 1,
+                stagger: 0.1,
+                ease: "power4.out",
+                scrollTrigger: { trigger: el, start: "top 90%", once: true },
+              },
+            ),
+          });
+          textSplits.push(split);
+        });
+      });
+      const cleanupTitle = w.__projectCleanup;
+      w.__projectCleanup = () => {
+        cleanupTitle?.();
+        textContext.revert();
+        textSplits.forEach((split) => split.revert());
+      };
+
+      const heroImg = document.querySelector<HTMLElement>("[data-hero-img]");
+      if (heroImg) {
+        gsap.fromTo(
+          heroImg,
+          { opacity: 0.85 },
+          {
+            opacity: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: "[data-project-hero]",
+              start: "top top",
+              end: "bottom top",
+              scrub: true,
+            },
+          },
+        );
+      }
+
+      // Gallery modal functionality
+      const gallerySection = document.querySelector("[data-gallery]");
+      const heroImage = gallerySection ? gallerySection.dataset.heroImage || "" : "";
+      const galleryImages = gallerySection ? JSON.parse(gallerySection.dataset.gallery || "[]") : [];
+      const sectionImages = gallerySection ? JSON.parse(gallerySection.dataset.sectionImages || "[]") : [];
+      const allImages = [heroImage, ...galleryImages, ...sectionImages];
+      let currentModalIndex = 0;
+      let modalElement: HTMLElement | null = null;
+
+      const openModal = (imageSrc: string) => {
+        w.__modalCleanup?.();
+        currentModalIndex = allImages.indexOf(imageSrc);
+        
+        modalElement = document.createElement("div");
+        modalElement.innerHTML = `
+          <div id="image-modal" role="dialog" aria-modal="true" aria-label="Galería del proyecto" class="fixed inset-0 z-[100002] flex items-center justify-center bg-black/90 backdrop-blur-sm transition-opacity duration-300">
+            <button id="modal-close" class="absolute top-4 right-4 z-10 p-2 text-white/80 hover:text-white transition-colors" aria-label="Cerrar modal">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+            <button id="modal-prev" class="absolute left-4 z-10 p-3 text-white/80 hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer" aria-label="Imagen anterior" ${currentModalIndex === 0 ? 'disabled' : ''}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+            <div class="relative w-[calc(100vw-2rem)] sm:w-[calc(100vw-10rem)] h-[calc(100dvh-8rem)] flex items-center justify-center">
+              <img id="modal-img" src="${imageSrc}" alt="Captura del proyecto ${document.querySelector('[data-project-title]')?.textContent?.trim() || ''}" class="max-w-full max-h-full w-auto h-auto object-contain" />
+            </div>
+            <button id="modal-next" class="absolute right-4 z-10 p-3 text-white/80 hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer" aria-label="Imagen siguiente" ${currentModalIndex === allImages.length - 1 ? 'disabled' : ''}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/60 text-sm font-nohemi-regular">
+              ${currentModalIndex + 1} / ${allImages.length}
+            </div>
+          </div>
+        `;
+        
+        document.body.appendChild(modalElement);
+        document.body.style.overflow = "hidden";
+
+        const closeModal = () => {
+          document.removeEventListener("keydown", handleKeydown);
+          modalElement?.remove();
+          modalElement = null;
+          document.body.style.overflow = "";
+        };
+
+        const updateModal = () => {
+          const img = modalElement?.querySelector("#modal-img") as HTMLImageElement;
+          const prev = modalElement?.querySelector("#modal-prev") as HTMLButtonElement;
+          const next = modalElement?.querySelector("#modal-next") as HTMLButtonElement;
+          const counter = modalElement?.querySelector(".absolute.bottom-4") as HTMLElement;
+          
+          if (img) img.src = allImages[currentModalIndex];
+          if (prev) prev.disabled = currentModalIndex === 0;
+          if (next) next.disabled = currentModalIndex === allImages.length - 1;
+          if (counter) counter.textContent = `${currentModalIndex + 1} / ${allImages.length}`;
+        };
+
+        modalElement.querySelector("#modal-close")?.addEventListener("click", closeModal);
+        modalElement.querySelector("#modal-prev")?.addEventListener("click", () => {
+          if (currentModalIndex > 0) {
+            currentModalIndex--;
+            updateModal();
+          }
+        });
+        modalElement.querySelector("#modal-next")?.addEventListener("click", () => {
+          if (currentModalIndex < allImages.length - 1) {
+            currentModalIndex++;
+            updateModal();
+          }
+        });
+        modalElement.querySelector("#image-modal")?.addEventListener("click", (e: Event) => {
+          if (e.target === e.currentTarget) {
+            closeModal();
+          }
+        });
+
+        const handleKeydown = (e: KeyboardEvent) => {
+          if (e.key === "Escape") closeModal();
+          if (e.key === "ArrowLeft" && currentModalIndex > 0) {
+            currentModalIndex--;
+            updateModal();
+          }
+          if (e.key === "ArrowRight" && currentModalIndex < allImages.length - 1) {
+            currentModalIndex++;
+            updateModal();
+          }
+        };
+
+        document.addEventListener("keydown", handleKeydown);
+        w.__modalCleanup = () => {
+          document.removeEventListener("keydown", handleKeydown);
+          closeModal();
+        };
+      };
+
+      document.querySelectorAll<HTMLElement>("[data-gallery-img]").forEach((el) => {
+        el.addEventListener("click", () => {
+          const imgSrc = el.dataset.galleryImg;
+          if (imgSrc) openModal(imgSrc);
+        });
+      });
+
+      document.querySelectorAll<HTMLElement>("[data-section-img-click]").forEach((el) => {
+        el.addEventListener("click", () => {
+          const imgSrc = el.dataset.sectionImgClick;
+          if (imgSrc) openModal(imgSrc);
+        });
+      });
+
+      ScrollTrigger.refresh();
+    };
+
+    if (!w.__projectPageBound) {
+      w.__projectPageBound = true;
+      document.addEventListener("astro:page-load", () =>
+        w.__initProjectPage(),
+      );
+    }
+  </script>
+</Layout>

@@ -20,43 +20,6 @@
   }
 </style>
 
-<script>
-  const loader = document.getElementById("loader");
-  const percentLabel = document.getElementById("loader-percent");
-
-  if (loader && percentLabel) {
-    document.documentElement.classList.add("is-loading");
-
-    const images = Array.from(document.images);
-    const totalTasks = images.length + 1; // +1 for fonts
-    let completedTasks = 0;
-
-    const updateProgress = () => {
-      completedTasks = Math.min(completedTasks + 1, totalTasks);
-      const percent = Math.round((completedTasks / totalTasks) * 100);
-      percentLabel.textContent = `${percent}%`;
-
-      if (completedTasks >= totalTasks) finish();
-    };
-
-    const finish = () => {
-      loader!.style.opacity = "0";
-      loader!.style.pointerEvents = "none";
-      document.documentElement.classList.remove("is-loading");
-      setTimeout(() => loader!.remove(), 600);
-    };
-
-    images.forEach((img) => {
-      if (img.complete) {
-        updateProgress();
-      } else {
-        img.addEventListener("load", updateProgress, { once: true });
-        img.addEventListener("error", updateProgress, { once: true });
-      }
-    });
-
-    document.fonts.ready.then(updateProgress);
-
-    if (totalTasks === 0) finish();
-  }
-</script>
+<!-- La logica vive en Layout.astro: al estar en todas las paginas,
+     su listener de astro:after-swap sobrevive a las view transitions
+     y elimina este markup cuando el index lo reinserta. -->

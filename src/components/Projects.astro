@@ -1,73 +1,25 @@
 ---
-interface Technology {
-  name: string;
-  icon?: string;
-}
+import { projects } from "../data/projects";
 
-interface Project {
-  id: number;
-  name: string;
-  number: string;
-  image: string;
-  technologies: Technology[];
-  description: string;
-  url: string;
-}
-const projects: Project[] = [
-  {
-    id: 1,
-    name: "LocalTTS",
-    number: "01",
-    image: "/img/Project3.webp",
-    technologies: [
-      { name: "React", icon: "icons/React.svg" },
-      { name: "TypeScript", icon: "icons/Ts.svg" },
-      { name: "Tailwind", icon: "icons/Tailwind.svg" },
-      { name: "Firebase", icon: "icons/Firebase.svg" },
-    ],
-    description:
-      "Un generador <span class='text-secondary'>completamente local</span> de texto a audio enfocado principalmente en <span class='text-secondary'>audiolibros</span> y <span class='text-secondary'>documentos</span>.",
-    url: "https://local-tts-ad27a.web.app/",
-  },
-  {
-    id: 2,
-    name: "Los 3 Tanos",
-    number: "02",
-    image: "/img/Project1.webp",
-    technologies: [
-      { name: "PHP", icon: "icons/PHP.svg" },
-      { name: "JavaScript", icon: "icons/JS.svg" },
-      { name: "MySQL", icon: "icons/MySQL.svg" },
-      { name: "SASS", icon: "icons/SASS.svg" },
-    ],
-    description:
-      "Implementación de <span class='text-secondary'>aplicación web</span> para gestión de restaurante. <br>Incluye herramientas como <span class='text-secondary'>gestión de productos</span>, <span class='text-secondary'>reservas</span>, <span class='text-secondary'>estadísticas</span>,<span class='text-secondary'> integración de IA</span>, entre otras.",
-    url: "https://los3tanospizzeria.ddns.net/",
-  },
-  {
-    id: 3,
-    name: "SugarBliss",
-    number: "03",
-    image: "/img/Project2.webp",
-    technologies: [
-      { name: "Astro", icon: "icons/Astro.svg" },
-      { name: "Tailwind", icon: "icons/Tailwind.svg" },
-      { name: "Supabase", icon: "icons/Supabase.svg" },
-      { name: "Figma", icon: "icons/Figma.svg" },
-    ],
-    description:
-      "Diseño de <span class='text-secondary'>landing page</span> para un emprendimiento de <span class='text-secondary'>pastelería</span>. <br />La finalidad fue crear una página para <span class='text-secondary'>centralizar</span> la información y <span class='text-secondary'>facilitar el contacto</span> con los clientes.",
-    url: "https://sugarbliss-byflor.com/",
-  },
-];
+const cards = projects.map(
+  ({ id, name, number, image, technologies, description, url }) => ({
+    id,
+    name,
+    number,
+    image,
+    technologies,
+    description,
+    url,
+  }),
+);
 
 const initialProject = projects[0];
 ---
 
 <section
   id="projects"
-  data-projects={JSON.stringify(projects)}
-  class="panel min-h-screen relative overflow-hidden z-20 bg-bg-tertiary border-t-2 border-primary/20 border-solid"
+  data-projects={JSON.stringify(cards)}
+  class="panel min-h-screen relative overflow-hidden z-20 bg-bg-tertiary border-t-2 border-primary/20 border-solid flex flex-col"
 >
   <div class="clamp-padding relative">
     <h3
@@ -91,20 +43,18 @@ const initialProject = projects[0];
     </div>
   </div>
 
-  <div
-    class="flex justify-center items-center flex-col absolute w-full right-1/2 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-12"
-  >
-    <div class="sm:w-[clamp(280px,42vw,520px)] sm:max-w-full w-full">
-      <div class="sm:block sm:pt-0 pt-6 flex justify-between">
+  <div class="relative flex-1 w-full flex justify-center items-center flex-col">
+    <div class="w-full xl:w-[clamp(280px,42vw,520px)]">
+      <div class="pt-6 sm:pt-0 flex justify-between gap-4">
         <p
           data-project-name
-          class="clamp-h3 font-nohemi-regular text-primary pb-8 sm:absolute sm:top-1/2 sm:left-0 sm:pb-0 clamp-padding-x"
+          class="clamp-h3 font-nohemi-regular text-primary pb-8 xl:absolute xl:top-1/2 xl:left-0 xl:pb-0 xl:whitespace-nowrap clamp-padding-x"
         >
           {initialProject.name}
         </p>
         <p
           data-project-number
-          class="clamp-h3 font-nohemi-regular text-primary-disabled pb-8 sm:absolute sm:top-1/2 sm:right-0 sm:pb-0 clamp-padding-x"
+          class="clamp-h3 font-nohemi-regular text-primary-disabled pb-8 xl:absolute xl:top-1/2 xl:right-0 xl:pb-0 xl:whitespace-nowrap clamp-padding-x"
         >
           {initialProject.number}
         </p>
@@ -122,13 +72,13 @@ const initialProject = projects[0];
             initialProject.technologies.map((tech) => (
               <span
                 data-tech-badge
-                class="flex items-center gap-3 rounded-full shadow-[inset_0_-4px_8px_-6px_rgba(0,0,0)] p-4 py-2"
+                class="flex items-center gap-2 sm:gap-3 rounded-full shadow-[inset_0_-4px_8px_-6px_rgba(0,0,0)] px-3 py-1.5 sm:p-4 sm:py-2"
               >
                 {tech.icon && (
                   <img src={tech.icon} alt={tech.name} class="w-4 h-4" />
                 )}
 
-                <span class="relative z-10 text-[clamp(12px,2vw,16px)]">
+                <span class="relative z-10 text-[clamp(11px,1.8vw,16px)]">
                   {tech.name}
                 </span>
               </span>
@@ -136,8 +86,10 @@ const initialProject = projects[0];
           }
         </div>
       </div>
-      <div class="flex flex-col items-center sm:!px-0 clamp-padding-x">
-        <div class="relative sm:w-[clamp(280px,42vw,520px)] w-full h-80">
+      <div class="flex flex-col items-center xl:!px-0 clamp-padding-x">
+        <div
+          class="relative w-full aspect-[4/3] sm:aspect-[16/10] sm:max-h-[45vh] xl:aspect-auto xl:max-h-none xl:w-[clamp(280px,42vw,520px)] xl:h-80"
+        >
           <div
             data-project-image-container
             class="absolute isolate inset-0 w-full h-full overflow-hidden border-1 border-secondary/20 border-solid rounded-xl"
@@ -151,7 +103,11 @@ const initialProject = projects[0];
             >
               <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-external-link"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 6h-6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6" /><path d="M11 13l9 -9" /><path d="M15 4h5v5" /></svg></span>
             </a>
-            <a href={initialProject.url} target="_blank" data-project-link>
+            <a
+              href={`/projects/${initialProject.id}`}
+              data-project-link={initialProject.id}
+              class="absolute inset-0 block"
+            >
               <img
                 data-project-image
                 src={initialProject.image}
@@ -180,26 +136,25 @@ const initialProject = projects[0];
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
+  import type { Project } from "../data/projects";
 
   gsap.registerPlugin(ScrollTrigger, ScrambleTextPlugin);
 
+  type ProjectCard = Pick<
+    Project,
+    "id" | "name" | "number" | "image" | "technologies" | "description" | "url"
+  >;
+
   const CONFIG = {
     animation: {
-      imageRevealDuration: 1,
       textScrambleDuration: 0.8,
       textRevealDelay: 0.2,
-    },
-    scroll: {
-      scrub: true,
     },
   };
 
   class ProjectScroller {
     private section: HTMLElement;
-    private isAnimating = false;
-    private animationCooldown = 500;
-    private projects!: any[];
-    private lastProgress: number = 0;
+    private projects!: ProjectCard[];
     private currentImage!: HTMLImageElement;
     private elements!: {
       name: HTMLElement;
@@ -224,6 +179,7 @@ const initialProject = projects[0];
 
       this.currentImage = this.elements.image;
       this.elements.image.style.transition = "filter 0.1s ease";
+      this.projects.slice(1).forEach((project) => this.createLink(project));
       this.elements.link.addEventListener("mouseenter", () =>
         this.handleImageHover(this.elements.image),
       );
@@ -288,7 +244,9 @@ const initialProject = projects[0];
       if (continuousIndex >= totalProjects - 1) {
         const lastProject = this.projects[totalProjects - 1];
 
-        this.cleanupImages(lastProject.id);
+        // Crea la imagen del ultimo proyecto si no existe (p.ej. al
+        // volver directo al ultimo desde el detalle) y activa su capa.
+        this.updateImageProgress(lastProject, lastProject, 1);
 
         if (
           this.elements.name.dataset.currentId !== lastProject.id.toString()
@@ -327,8 +285,8 @@ const initialProject = projects[0];
     }
 
     private updateImageProgress(
-      fromProject: any,
-      toProject: any,
+      fromProject: ProjectCard,
+      toProject: ProjectCard,
       progress: number,
     ) {
       let fromLink = this.elements.imageContainer.querySelector(
@@ -343,16 +301,34 @@ const initialProject = projects[0];
       }
 
       if (!toLink) {
+        // Re-query: si from===to, createLink ya lo agrego arriba.
+        toLink = this.elements.imageContainer.querySelector(
+          `[data-project-link="${toProject.id}"]`,
+        ) as HTMLAnchorElement;
+      }
+      if (!toLink) {
         toLink = this.createLink(toProject);
       }
 
       const fromImage = fromLink.querySelector("img") as HTMLImageElement;
       const toImage = toLink.querySelector("img") as HTMLImageElement;
+      const allLinks = this.elements.imageContainer.querySelectorAll(
+        "a[data-project-link]",
+      );
 
-      gsap.set(fromLink, { yPercent: 0, zIndex: 1 });
-
+      gsap.set(allLinks, {
+        clipPath: "inset(100% 0 0 0)",
+        pointerEvents: "none",
+        zIndex: 0,
+      });
+      gsap.set(fromLink, {
+        clipPath: "inset(0% 0 0 0)",
+        pointerEvents: "auto",
+        zIndex: 1,
+      });
       gsap.set(toLink, {
         clipPath: `inset(${(1 - progress) * 100}% 0 0 0)`,
+        pointerEvents: progress >= 0.5 ? "auto" : "none",
         zIndex: 2,
       });
 
@@ -360,34 +336,21 @@ const initialProject = projects[0];
         progress >= 0.5 ? toProject.url : fromProject.url;
       this.currentImage =
         (progress >= 0.5 ? toImage : fromImage) || this.currentImage;
-
-      if (progress >= 0.99) {
-        this.cleanupImages(toProject.id);
-      } else if (progress <= 0.01) {
-        this.cleanupImages(fromProject.id);
-      }
     }
 
-    private createLink(project: any): HTMLAnchorElement {
+    private createLink(project: ProjectCard): HTMLAnchorElement {
       const link = document.createElement("a");
-      link.href = project.url;
-      link.target = "_blank";
+      link.href = `/projects/${project.id}`;
       link.dataset.projectLink = project.id.toString();
-      link.style.position = "absolute";
-      link.style.inset = "0";
-      link.style.width = "100%";
-      link.style.height = "100%";
-      link.style.display = "block";
+      link.className = "absolute inset-0 block";
+      link.style.clipPath = "inset(100% 0 0 0)";
+      link.style.pointerEvents = "none";
 
       const img = document.createElement("img");
       img.src = project.image;
       img.alt = project.name;
       img.className = this.elements.image.className;
       img.dataset.projectId = project.id.toString();
-      img.style.position = "absolute";
-      img.style.inset = "0";
-      img.style.width = "100%";
-      img.style.height = "100%";
       img.style.transition = "filter 0.1s ease";
 
       link.appendChild(img);
@@ -414,23 +377,10 @@ const initialProject = projects[0];
       });
     }
 
-    private cleanupImages(keepProjectId: number) {
-      const allLinks = this.elements.imageContainer.querySelectorAll(
-        "a[data-project-link]",
-      );
-      allLinks.forEach((link) => {
-        const linkProjectId = (link as HTMLAnchorElement).dataset.projectLink;
-        if (linkProjectId && parseInt(linkProjectId) !== keepProjectId) {
-          link.remove();
-        }
-      });
-    }
-
-    private scrambleToProject(targetProject: any) {
-      if (this.isAnimating) return;
-      this.isAnimating = true;
+    private scrambleToProject(targetProject: ProjectCard) {
       this.elements.name.dataset.currentId = targetProject.id.toString();
       this.elements.icon.href = targetProject.url;
+      gsap.killTweensOf([this.elements.name, this.elements.number]);
 
       gsap.to(this.elements.name, {
         scrambleText: {
@@ -453,125 +403,97 @@ const initialProject = projects[0];
       });
 
       this.slideTechnologies(targetProject.technologies);
-
       this.slideDescription(targetProject.description);
-
-      gsap.delayedCall(0.5, () => {
-        this.isAnimating = false;
-      });
     }
 
     private slideTechnologies(
       newTechnologies: { name: string; icon?: string }[],
     ) {
       const currentTech = this.elements.techContainer;
-      const wrapper = this.elements.techWrapper;
-
-      currentTech.style.position = "absolute";
-      currentTech.style.width = "100%";
-      const newTech = document.createElement("div");
-      newTech.className = "flex flex-wrap flex-row justify-around w-full";
-      newTech.innerHTML = newTechnologies
+      gsap.killTweensOf(currentTech);
+      currentTech.innerHTML = newTechnologies
         .map(
           (tech) => `
           <span
             data-tech-badge
-            class="flex items-center gap-3 rounded-full shadow-[inset_0_-4px_8px_-6px_rgba(0,0,0)] p-4 py-2"
+            class="flex items-center gap-2 sm:gap-3 rounded-full shadow-[inset_0_-4px_8px_-6px_rgba(0,0,0)] px-3 py-1.5 sm:p-4 sm:py-2"
           >
 
       ${
         tech.icon
           ? `
-          <img src=${tech.icon} alt=${tech.name} class="w-4 h-4" />
+          <img src="${tech.icon}" alt="${tech.name}" class="w-4 h-4" />
       `
           : ""
       }
-      <span class="relative z-10 text-[clamp(12px,2vw,16px)]">${tech.name}</span>
+      <span class="relative z-10 text-[clamp(11px,1.8vw,16px)]">${tech.name}</span>
     </span>
   `,
         )
         .join("");
 
-      newTech.style.position = "absolute";
-      newTech.style.width = "100%";
-
-      gsap.set(newTech, { y: 50, opacity: 0 });
-
-      wrapper.appendChild(newTech);
-      const currentHeight = currentTech.offsetHeight;
-      wrapper.style.height = `${currentHeight}px`;
-      const tl = gsap.timeline();
-
-      tl.to(
+      this.elements.techWrapper.style.height = `${currentTech.offsetHeight}px`;
+      gsap.fromTo(
         currentTech,
-        {
-          y: -50,
-          opacity: 0,
-          duration: 0.4,
-          ease: "power2.inOut",
-        },
-        0,
-      );
-
-      tl.to(
-        newTech,
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.4,
-          ease: "power2.inOut",
-          onComplete: () => {
-            currentTech.remove();
-            newTech.style.position = "relative";
-            newTech.style.width = "100%";
-            newTech.setAttribute("data-tech-container", "");
-            this.elements.techContainer = newTech;
-          },
-        },
-        0,
+        { y: 24, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.4, ease: "power2.out" },
       );
     }
 
     private slideDescription(newDescription: string) {
       const currentDesc = this.elements.description;
-      const newDesc = document.createElement("p");
-      newDesc.className = currentDesc.className;
-      newDesc.innerHTML = newDescription;
-      newDesc.style.position = "absolute";
-      newDesc.style.width = "100%";
-      gsap.set(newDesc, { y: 100, opacity: 0 });
-
-      currentDesc.parentElement?.appendChild(newDesc);
-      const tl = gsap.timeline();
-
-      tl.to(
+      gsap.killTweensOf(currentDesc);
+      currentDesc.innerHTML = newDescription;
+      gsap.fromTo(
         currentDesc,
-        {
-          y: -100,
-          opacity: 0,
-          duration: 0.5,
-          ease: "power2.inOut",
-        },
-        0,
-      );
-
-      tl.to(
-        newDesc,
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.5,
-          ease: "power2.inOut",
-          onComplete: () => {
-            currentDesc.remove();
-            this.elements.description = newDesc;
-          },
-        },
-        0,
+        { y: 40, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" },
       );
     }
   }
-  document.addEventListener("DOMContentLoaded", () => {
+  const w = window as any;
+
+  w.__initProjects = () => {
     new ProjectScroller("#projects");
-  });
+
+    // Al volver desde un detalle, dejar el scroller posicionado en el
+    // proyecto desde el que se entro (como si solo se hubiera scrolleado).
+    const pid = w.__returnToProject;
+    w.__returnToProject = null;
+    if (!pid) return;
+
+    const section = document.querySelector<HTMLElement>("#projects");
+    if (!section) return;
+
+    const list = JSON.parse(section.dataset.projects || "[]");
+    const index = list.findIndex((p: any) => String(p.id) === String(pid));
+    if (index <= 0) return;
+
+    // Progreso del pin: el proyecto i se muestra a innerHeight * i
+    // desde el inicio de la seccion.
+    const y =
+      section.getBoundingClientRect().top +
+      window.scrollY +
+      window.innerHeight * index;
+
+    const lenis = w.lenis;
+    if (lenis) {
+      lenis.scrollTo(y, { immediate: true });
+    } else {
+      window.scrollTo({ top: y, behavior: "instant" });
+    }
+    // Marcar antes del refresh: evita que el scroll por hash del
+    // index (/#projects) pise esta restauracion segun el orden.
+    w.__scrollRestored = true;
+    ScrollTrigger.refresh();
+  };
+
+  if (!w.__projectsBound) {
+    w.__projectsBound = true;
+
+    // Se dispara en la carga inicial y en cada navegacion con ClientRouter.
+    document.addEventListener("astro:page-load", () => {
+      w.__initProjects();
+    });
+  }
 </script>
