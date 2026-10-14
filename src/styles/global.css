@@ -98,7 +98,6 @@ html {
   background-color: black;
 }
 
-/* Entrada desde la sección de proyectos. */
 @keyframes project-swipe-up {
   from { transform: translateY(100%); }
   to { transform: translateY(0); }

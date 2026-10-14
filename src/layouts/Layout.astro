@@ -114,8 +114,6 @@ const structuredData = {
     const percentLabel = document.getElementById("loader-percent");
     if (!loader) return;
 
-    // El intro solo se muestra una vez por sesion; en swaps
-    // posteriores el index reinserta el markup y se elimina aca.
     if (sessionStorage.getItem("loader-done")) {
       loader.remove();
       return;
@@ -125,7 +123,7 @@ const structuredData = {
     document.documentElement.classList.add("is-loading");
 
     const images = Array.from(document.images);
-    const totalTasks = images.length + 1; // +1 por las fuentes
+    const totalTasks = images.length + 1;
     let completedTasks = 0;
     let finished = false;
 
@@ -156,14 +154,11 @@ const structuredData = {
 
     document.fonts.ready.then(updateProgress);
 
-    // Failsafe por si alguna imagen (p.ej. lazy) nunca dispara load.
     setTimeout(finish, 6000);
   }
 
   if (!w.__loaderBound) {
     w.__loaderBound = true;
-    // after-swap corre dentro de la view transition, antes del paint:
-    // evita el flash del "0%" al volver al index.
     document.addEventListener("astro:after-swap", initLoader);
   }
   initLoader();

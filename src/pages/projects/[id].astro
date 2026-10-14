@@ -27,7 +27,7 @@ const next = getNextProject(project.id);
     <Header />
 
     <main>
-      <!-- Breadcrumb -->
+      
       <div
         class="clamp-padding-x pt-24 sm:pt-28 flex items-center justify-between"
       >
@@ -42,7 +42,7 @@ const next = getNextProject(project.id);
         >
       </div>
 
-      <!-- Hero -->
+      
       <section class="clamp-padding-x pt-8 pb-10 sm:pb-14">
         <p
           class="text-xs font-nohemi-medium text-primary-disabled/60 uppercase tracking-[0.25em] mb-4"
@@ -76,7 +76,7 @@ const next = getNextProject(project.id);
         </div>
       </section>
 
-      <!-- Portada del proyecto -->
+      
       <section class="clamp-padding-x pb-6">
         <div
           data-project-hero
@@ -91,7 +91,7 @@ const next = getNextProject(project.id);
         </div>
       </section>
 
-      <!-- Overview + meta -->
+      
       <section class="clamp-padding grid gap-12 lg:grid-cols-2">
         <div>
           <h2
@@ -183,7 +183,7 @@ const next = getNextProject(project.id);
         </div>
       </section>
 
-      <!-- Secciones numeradas -->
+      
       {
         project.sections.map((section) => (
           <section class="clamp-padding-x py-10 sm:py-16 border-t border-white/5 grid gap-6 md:grid-cols-12">
@@ -215,7 +215,7 @@ const next = getNextProject(project.id);
         ))
       }
 
-      <!-- Galeria -->
+      
       <section 
         class="clamp-padding-x py-10 grid gap-6 sm:grid-cols-2"
         data-hero-image={project.image}
@@ -239,7 +239,7 @@ const next = getNextProject(project.id);
         }
       </section>
 
-      <!-- Siguiente proyecto -->
+      
       <a
         href={`/projects/${next.id}`}
         data-next-project
@@ -273,7 +273,7 @@ const next = getNextProject(project.id);
         </div>
       </a>
 
-      <!-- CTA -->
+      
       <section
         class="clamp-padding border-t border-white/10 flex flex-col items-center text-center gap-6"
       >
@@ -303,14 +303,11 @@ const next = getNextProject(project.id);
     const w = window as any;
 
     w.__initProjectPage = () => {
-      // Solo corre en paginas de proyecto.
       if (!document.querySelector("[data-project-page]")) return;
       w.__projectCleanup?.();
 
       stopSmoothScroll();
 
-      // Titulo shrink-to-fit: si el nombre desborda el ancho, se
-      // achica el font-size hasta entrar en una sola linea.
       const title = document.querySelector<HTMLElement>(
         "[data-project-title]",
       );
@@ -324,7 +321,6 @@ const next = getNextProject(project.id);
           }
         };
         fit();
-        // Las fuentes custom pueden llegar despues del primer calculo.
         document.fonts.ready.then(fit);
         window.addEventListener("resize", fit);
         w.__projectCleanup = () =>
@@ -383,7 +379,6 @@ const next = getNextProject(project.id);
         );
       }
 
-      // Gallery modal functionality
       const gallerySection = document.querySelector("[data-gallery]");
       const heroImage = gallerySection ? gallerySection.dataset.heroImage || "" : "";
       const galleryImages = gallerySection ? JSON.parse(gallerySection.dataset.gallery || "[]") : [];

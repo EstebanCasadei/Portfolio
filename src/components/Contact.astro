@@ -34,7 +34,7 @@ const EMAILJS_TEMPLATE_ID = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID ?? "";
   <div
     class="grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-8 lg:gap-16 items-center mt-8 lg:mt-16"
   >
-    <!-- Credencial 3D -->
+    
     <div
       id="badge-stage"
       class="relative w-full h-[320px] sm:h-[420px] lg:h-[600px] order-1 lg:order-none touch-pan-y select-none"
@@ -48,7 +48,7 @@ const EMAILJS_TEMPLATE_ID = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID ?? "";
       </p>
     </div>
 
-    <!-- Formulario -->
+    
     <form
       id="contact-form"
       data-public-key={EMAILJS_PUBLIC_KEY}
@@ -138,9 +138,6 @@ const EMAILJS_TEMPLATE_ID = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID ?? "";
   import * as THREE from "three";
   import emailjs from "@emailjs/browser";
 
-  /* ------------------------------------------------------------------ *
-   * Credencial 3D: cordon verlet + tarjeta rigida. Sin motor de fisica. *
-   * ------------------------------------------------------------------ */
 
   const canvas = document.getElementById(
     "badge-canvas",
@@ -209,7 +206,6 @@ const EMAILJS_TEMPLATE_ID = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID ?? "";
     const cardParts = [pL, pR, pB];
 
     const DIAG = Math.hypot(CARD_W / 2, CARD_H);
-    // La cadena lleva ademas un clamp duro para que no se estire.
     const chain: [Particle, Particle, number][] = [];
     for (let i = 0; i < ROPE_SEGMENTS; i++)
       chain.push([rope[i], rope[i + 1], SEG_LEN]);
@@ -249,8 +245,6 @@ const EMAILJS_TEMPLATE_ID = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID ?? "";
         }
       }
       rope[0].p.copy(ANCHOR);
-      // Pasada final desde el ancla: el hijo se reposiciona al largo maximo.
-      // Con los links ordenados de arriba hacia abajo converge en una sola pasada.
       for (const [a, b, rest] of chain) {
         tmp.subVectors(b.p, a.p);
         const d = tmp.length();
@@ -260,7 +254,6 @@ const EMAILJS_TEMPLATE_ID = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID ?? "";
       }
     }
 
-    // --- Cordon (tubo desde la curva) ---
     const curve = new THREE.CatmullRomCurve3(rope.map((q) => q.p));
     curve.curveType = "chordal";
 
@@ -272,8 +265,6 @@ const EMAILJS_TEMPLATE_ID = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID ?? "";
     const cord = new THREE.Mesh(new THREE.TubeGeometry(curve, 32, 0.04, 6), cordMat);
     scene.add(cord);
 
-    // --- Tarjeta: textura desde public/img/badge-front.png ---
-    // #ponytail: si la ruta cambia, solo renombrar aqui.
     const cardTexture = new THREE.TextureLoader().load("/img/badge-front.png");
     cardTexture.colorSpace = THREE.SRGBColorSpace;
     cardTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
@@ -289,7 +280,6 @@ const EMAILJS_TEMPLATE_ID = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID ?? "";
       roughness: 0.45,
       metalness: 0.15,
     });
-    // BoxGeometry: [+x, -x, +y, -y, +z (frente), -z]
     const cardMesh = new THREE.Mesh(
       new THREE.BoxGeometry(CARD_W, CARD_H, 0.03),
       [edge, edge, edge, edge, face, edge],
@@ -327,7 +317,6 @@ const EMAILJS_TEMPLATE_ID = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID ?? "";
       cardGroup.matrix.makeBasis(xAxis, yUp, zAxis).setPosition(center);
     }
 
-    // --- Drag ---
     const raycaster = new THREE.Raycaster();
     const ndc = new THREE.Vector2();
     const dragPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
@@ -363,17 +352,14 @@ const EMAILJS_TEMPLATE_ID = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID ?? "";
       canvas.style.cursor = "grabbing";
     });
 
-    // Alcance real del centro de la tarjeta: cordon + media tarjeta.
     const MAX_REACH = ROPE_LEN + CARD_H / 2;
     const target = new THREE.Vector3();
 
     canvas.addEventListener("pointermove", (e) => {
       if (!dragging) return;
       if (!pointerToPlane(e, center.z)) return;
-      // Clampear el target evita el estiron en el origen, en vez de pelearlo despues.
       target.subVectors(hit, grabOffset).sub(ANCHOR).clampLength(0, MAX_REACH).add(ANCHOR);
       delta.subVectors(target, center);
-      // Mueve solo .p: la diferencia con .prev se convierte en inercia al soltar.
       for (const q of cardParts) q.p.add(delta);
     });
 
@@ -384,7 +370,6 @@ const EMAILJS_TEMPLATE_ID = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID ?? "";
     canvas.addEventListener("pointerup", endDrag);
     canvas.addEventListener("pointercancel", endDrag);
 
-    // --- Resize + loop ---
     function resize() {
       const { clientWidth: w, clientHeight: h } = canvas!;
       if (!w || !h) return;
@@ -414,7 +399,6 @@ const EMAILJS_TEMPLATE_ID = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID ?? "";
       renderer.render(scene, camera);
     }
 
-    // Pausa la simulacion cuando la seccion no esta en pantalla.
     new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting === visible) return;
@@ -429,7 +413,6 @@ const EMAILJS_TEMPLATE_ID = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID ?? "";
     ).observe(stage);
   }
 
-  /* ------------------------------- Form ------------------------------- */
 
   const form = document.getElementById("contact-form") as HTMLFormElement | null;
   const status = document.getElementById("form-status");

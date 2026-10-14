@@ -108,9 +108,6 @@ const socialLinks = [
 
   const w = window as any;
 
-  // Los elementos del header se recrean en cada navegacion con
-  // ClientRouter: este init vuelve a bindear todo contra el DOM nuevo
-  // y limpia los listeners de window/document de la corrida anterior.
   w.__initHeader = initHeader;
   if (!w.__headerBound) {
     w.__headerBound = true;
@@ -215,7 +212,6 @@ const socialLinks = [
           lenis.start();
         }
 
-        // Fast but smooth closing animation
         const closeTl = gsap.timeline({
           onComplete: () => {
             gsap.set(panel, { visibility: "hidden" });

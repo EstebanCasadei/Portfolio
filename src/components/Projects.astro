@@ -248,8 +248,6 @@ const initialProject = projects[0];
       if (continuousIndex >= totalProjects - 1) {
         const lastProject = this.projects[totalProjects - 1];
 
-        // Crea la imagen del ultimo proyecto si no existe (p.ej. al
-        // volver directo al ultimo desde el detalle) y activa su capa.
         this.updateImageProgress(lastProject, lastProject, 1);
 
         if (
@@ -305,7 +303,6 @@ const initialProject = projects[0];
       }
 
       if (!toLink) {
-        // Re-query: si from===to, createLink ya lo agrego arriba.
         toLink = this.elements.imageContainer.querySelector(
           `[data-project-link="${toProject.id}"]`,
         ) as HTMLAnchorElement;
@@ -460,8 +457,6 @@ const initialProject = projects[0];
   w.__initProjects = () => {
     new ProjectScroller("#projects");
 
-    // Al volver desde un detalle, dejar el scroller posicionado en el
-    // proyecto desde el que se entro (como si solo se hubiera scrolleado).
     const pid = w.__returnToProject;
     w.__returnToProject = null;
     if (!pid) return;
@@ -473,8 +468,6 @@ const initialProject = projects[0];
     const index = list.findIndex((p: any) => String(p.id) === String(pid));
     if (index <= 0) return;
 
-    // Progreso del pin: el proyecto i se muestra a innerHeight * i
-    // desde el inicio de la seccion.
     const y =
       section.getBoundingClientRect().top +
       window.scrollY +
@@ -486,8 +479,6 @@ const initialProject = projects[0];
     } else {
       window.scrollTo({ top: y, behavior: "instant" });
     }
-    // Marcar antes del refresh: evita que el scroll por hash del
-    // index (/#projects) pise esta restauracion segun el orden.
     w.__scrollRestored = true;
     ScrollTrigger.refresh();
   };
@@ -495,7 +486,6 @@ const initialProject = projects[0];
   if (!w.__projectsBound) {
     w.__projectsBound = true;
 
-    // Se dispara en la carga inicial y en cada navegacion con ClientRouter.
     document.addEventListener("astro:page-load", () => {
       w.__initProjects();
     });

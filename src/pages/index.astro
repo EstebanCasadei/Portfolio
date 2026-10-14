@@ -67,7 +67,6 @@ import Layout from "../layouts/Layout.astro";
       lenis.resize();
     };
 
-    // Esperar al loader para que la aparición del hero sea visible.
     if (document.getElementById("loader")) {
       loaderObserver = new MutationObserver(() => {
         if (document.getElementById("loader")) return;
@@ -114,9 +113,6 @@ import Layout from "../layouts/Layout.astro";
 
     ScrollTrigger.refresh();
 
-    // Al llegar con hash (/#projects desde un detalle), ir a la seccion.
-    // Si se restauro la posicion del scroller de proyectos, ese scroll
-    // tiene prioridad sobre el hash.
     if (location.hash && !w.__scrollRestored) {
       lenis?.scrollTo(location.hash, { immediate: true });
     }
