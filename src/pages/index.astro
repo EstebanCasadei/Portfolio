@@ -30,7 +30,6 @@ import Layout from "../layouts/Layout.astro";
   const w = window as any;
 
   w.__initHome = () => {
-    // Solo corre en el index (los listeners persisten entre navegaciones).
     if (!document.querySelector(".panel")) return;
 
     w.__homeTitleCleanup?.();

@@ -160,7 +160,6 @@ const EMAILJS_TEMPLATE_ID = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID ?? "";
     const SOLVER_ITERATIONS = 16;
     const MAX_STRETCH = 1.01;
 
-    // --- Escena ---
     const renderer = new THREE.WebGLRenderer({
       canvas,
       alpha: true,
@@ -182,7 +181,6 @@ const EMAILJS_TEMPLATE_ID = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID ?? "";
     rim.position.set(-5, 2, -4);
     scene.add(rim);
 
-    // --- Particulas ---
     type Particle = { p: THREE.Vector3; prev: THREE.Vector3; pinned: boolean };
 
     const make = (x: number, y: number, z: number, pinned = false): Particle => {
@@ -192,7 +190,7 @@ const EMAILJS_TEMPLATE_ID = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID ?? "";
 
     const rope: Particle[] = [];
     for (let i = 0; i <= ROPE_SEGMENTS; i++) {
-      // Sin reduced-motion arranca hacia un costado para que caiga con swing.
+
       const drop = i * SEG_LEN * 0.85;
       rope.push(
         make(
@@ -205,7 +203,6 @@ const EMAILJS_TEMPLATE_ID = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID ?? "";
     }
     const clip = rope[ROPE_SEGMENTS];
 
-    // Tarjeta: 3 particulas (esquina sup. izq, sup. der, centro inferior).
     const pL = make(clip.p.x - CARD_W / 2, clip.p.y, 0);
     const pR = make(clip.p.x + CARD_W / 2, clip.p.y, 0);
     const pB = make(clip.p.x, clip.p.y - CARD_H, 0);

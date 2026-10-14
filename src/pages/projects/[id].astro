@@ -19,7 +19,7 @@ const { project } = Astro.props;
 const next = getNextProject(project.id);
 ---
 
-<Layout title={`${project.name} - Esteban Casadei`} loader={false}>
+<Layout title={project.seoTitle} description={project.seoDescription} loader={false}>
   <div
     data-project-page
     class="relative min-h-screen bg-bg-tertiary overflow-x-clip"

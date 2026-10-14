@@ -5,11 +5,49 @@ import { ClientRouter } from "astro:transitions";
 
 interface Props {
   title?: string;
+  description?: string;
   loader?: boolean;
 }
 
-const { title = "Esteban Casadei - Frontend Developer", loader = true } =
-  Astro.props;
+const {
+  title = "Esteban Casadei | Desarrollo web y diseño UX/UI",
+  description = "Soy Esteban Casadei, desarrollador frontend y diseñador UX/UI. Creo webs que transmiten la personalidad de tu negocio desde la primera impresión olvidando el diseño genérico.",
+  loader = true,
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname.replace(/\/$/, "") || "/", Astro.site!);
+const cover = new URL("/og-cover.jpg", Astro.site!);
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": `${Astro.site}#person`,
+      name: "Esteban Casadei",
+      url: Astro.site!.href,
+      jobTitle: "Desarrollador frontend y diseñador UX/UI",
+      sameAs: ["https://github.com/EstebanCasadei", "https://www.linkedin.com/in/esteban-casadei-087553357/", "https://www.instagram.com/esteban_casadei/"],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${Astro.site}#website`,
+      name: "Esteban Casadei | Portfolio",
+      url: Astro.site!.href,
+      inLanguage: "es-UY",
+      author: { "@id": `${Astro.site}#person` },
+    },
+    {
+      "@type": "WebPage",
+      "@id": canonical.href,
+      url: canonical.href,
+      name: title,
+      description,
+      inLanguage: "es-UY",
+      isPartOf: { "@id": `${Astro.site}#website` },
+      author: { "@id": `${Astro.site}#person` },
+      image: cover.href,
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -22,6 +60,27 @@ const { title = "Esteban Casadei - Frontend Developer", loader = true } =
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Esteban Casadei | Portfolio" />
+    <meta property="og:locale" content="es_UY" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={cover} />
+    <meta property="og:image:secure_url" content={cover} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="1200" />
+    <meta property="og:image:alt" content="Portfolio de Esteban Casadei" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={cover} />
+    <meta name="twitter:image:alt" content="Portfolio de Esteban Casadei" />
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData).replace(/</g, "\\u003c")} />
     <ClientRouter />
   </head>
   <body>

@@ -132,6 +132,10 @@ const initialProject = projects[0];
   </div>
 </section>
 
+<nav class="sr-only" aria-label="Todos los proyectos del portfolio">
+  {projects.map((project) => <a href={`/projects/${project.id}`}>{project.name}: {project.role}</a>)}
+</nav>
+
 <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";

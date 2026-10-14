@@ -18,6 +18,8 @@ export interface Project {
   image: string;
   technologies: Technology[];
   description: string;
+  seoTitle: string;
+  seoDescription: string;
   url: string;
   repo?: string;
   client: string;
@@ -32,6 +34,8 @@ export const projects: Project[] = [
   {
     id: 4,
     name: "TechToJob",
+    seoTitle: "TechToJob: landing oficial | Esteban Casadei",
+    seoDescription: "Diseño y desarrollo de la landing oficial de TechToJob con Next.js, TypeScript y GSAP. Mi propuesta ganó el torneo organizado por la comunidad.",
     number: "01",
     image: "/img/projects/techtojob/cover.webp",
     technologies: [
@@ -42,7 +46,7 @@ export const projects: Project[] = [
     ],
     description:
       "Mi propuesta para la <strong class='text-secondary font-nohemi-bold'>landing oficial de TechToJob</strong>. Diseñé y desarrollé la página, que fue elegida <strong class='text-secondary font-nohemi-bold'>ganadora del torneo</strong> de la comunidad.",
-    url: "https://tech-to-job-estebancasadei.vercel.app/",
+    url: "https://techtojob.com/",
     repo: "https://github.com/EstebanCasadei/TechToJobLanding",
     client: "TechToJob · Comunidad tech",
     role: "Diseño y desarrollo frontend",
@@ -82,6 +86,8 @@ export const projects: Project[] = [
   {
     id: 1,
     name: "LocalTTS",
+    seoTitle: "LocalTTS: lector de documentos con voz | Esteban Casadei",
+    seoDescription: "LocalTTS convierte documentos PDF y TXT en voz dentro del navegador. Diseño propio y desarrollo compartido con Iván Medina usando React, Piper TTS y Firebase.",
     number: "02",
     image: "/img/projects/localtts/cover.webp",
     technologies: [
@@ -132,6 +138,8 @@ export const projects: Project[] = [
   {
     id: 2,
     name: "Los 3 Tanos",
+    seoTitle: "Los 3 Tanos: web para pizzería | Esteban Casadei",
+    seoDescription: "Diseño y desarrollo de la web de Los 3 Tanos, en Las Toscas: carta con precios, recorrido 360° y reservas por WhatsApp. Creada con Astro y Supabase.",
     number: "03",
     image: "/img/projects/los3tanos/cover.webp",
     technologies: [
@@ -181,6 +189,8 @@ export const projects: Project[] = [
   {
     id: 3,
     name: "SugarBliss",
+    seoTitle: "SugarBliss: catálogo de pastelería | Esteban Casadei",
+    seoDescription: "Diseño y desarrollo de la web de SugarBliss by Flor con Astro y Supabase: catálogo de tortas y postres, fichas de productos y consultas por WhatsApp.",
     number: "04",
     image: "/img/projects/sugarbliss/cover.webp",
     technologies: [
